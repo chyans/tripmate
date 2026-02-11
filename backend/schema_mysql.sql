@@ -1,8 +1,6 @@
 -- TripMate Database Schema (MySQL)
-
--- Create database if not exists
-CREATE DATABASE IF NOT EXISTS tripmate_db;
-USE tripmate_db;
+-- Note: On Railway the database is pre-created (named "railway").
+-- Locally you can run: CREATE DATABASE IF NOT EXISTS tripmate_db; USE tripmate_db;
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
