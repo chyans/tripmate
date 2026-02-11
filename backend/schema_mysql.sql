@@ -119,13 +119,38 @@ CREATE TABLE IF NOT EXISTS website_reviews (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Create indexes for better performance
-CREATE INDEX idx_trips_user_id ON trips(user_id);
-CREATE INDEX idx_photos_trip_id ON photos(trip_id);
-CREATE INDEX idx_photos_site_name ON photos(site_name);
-CREATE INDEX idx_photos_geocoded_location ON photos(geocoded_location);
-CREATE INDEX idx_reviews_trip_id ON reviews(trip_id);
-CREATE INDEX idx_notifications_user_id ON notifications(user_id);
-CREATE INDEX idx_budget_items_trip_id ON budget_items(trip_id);
-CREATE INDEX idx_website_reviews_user_id ON website_reviews(user_id);
+-- Create indexes for better performance (safe to re-run)
+SET @db = DATABASE();
+
+SELECT COUNT(*) INTO @exists FROM information_schema.statistics WHERE table_schema = @db AND table_name = 'trips' AND index_name = 'idx_trips_user_id';
+SET @sql = IF(@exists = 0, 'CREATE INDEX idx_trips_user_id ON trips(user_id)', 'SELECT 1');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SELECT COUNT(*) INTO @exists FROM information_schema.statistics WHERE table_schema = @db AND table_name = 'photos' AND index_name = 'idx_photos_trip_id';
+SET @sql = IF(@exists = 0, 'CREATE INDEX idx_photos_trip_id ON photos(trip_id)', 'SELECT 1');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SELECT COUNT(*) INTO @exists FROM information_schema.statistics WHERE table_schema = @db AND table_name = 'photos' AND index_name = 'idx_photos_site_name';
+SET @sql = IF(@exists = 0, 'CREATE INDEX idx_photos_site_name ON photos(site_name)', 'SELECT 1');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SELECT COUNT(*) INTO @exists FROM information_schema.statistics WHERE table_schema = @db AND table_name = 'photos' AND index_name = 'idx_photos_geocoded_location';
+SET @sql = IF(@exists = 0, 'CREATE INDEX idx_photos_geocoded_location ON photos(geocoded_location)', 'SELECT 1');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SELECT COUNT(*) INTO @exists FROM information_schema.statistics WHERE table_schema = @db AND table_name = 'reviews' AND index_name = 'idx_reviews_trip_id';
+SET @sql = IF(@exists = 0, 'CREATE INDEX idx_reviews_trip_id ON reviews(trip_id)', 'SELECT 1');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SELECT COUNT(*) INTO @exists FROM information_schema.statistics WHERE table_schema = @db AND table_name = 'notifications' AND index_name = 'idx_notifications_user_id';
+SET @sql = IF(@exists = 0, 'CREATE INDEX idx_notifications_user_id ON notifications(user_id)', 'SELECT 1');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SELECT COUNT(*) INTO @exists FROM information_schema.statistics WHERE table_schema = @db AND table_name = 'budget_items' AND index_name = 'idx_budget_items_trip_id';
+SET @sql = IF(@exists = 0, 'CREATE INDEX idx_budget_items_trip_id ON budget_items(trip_id)', 'SELECT 1');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
+
+SELECT COUNT(*) INTO @exists FROM information_schema.statistics WHERE table_schema = @db AND table_name = 'website_reviews' AND index_name = 'idx_website_reviews_user_id';
+SET @sql = IF(@exists = 0, 'CREATE INDEX idx_website_reviews_user_id ON website_reviews(user_id)', 'SELECT 1');
+PREPARE stmt FROM @sql; EXECUTE stmt; DEALLOCATE PREPARE stmt;
 
