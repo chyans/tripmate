@@ -250,7 +250,7 @@ export default function AIChat({ locations, photos, token, user, tripId }) {
             Free: {questionsUsed}/{limit} questions used
           </span>
         )}
-        {user?.is_premium && (
+        {!!user?.is_premium && (
           <span style={{ 
             fontSize: "12px", 
             color: "#667eea", 

@@ -64,7 +64,7 @@ export default function HelpSupport({ onBack }) {
         },
         {
           q: "What's the photo & video size limit?",
-          a: "Free users can upload up to 100MB total of photos and videos per trip (100MB max per file). Premium users can upload up to 1GB total per trip (500MB max per file)."
+          a: "Free users can upload up to 100MB total of photos and videos per trip. Premium users can upload up to 1GB total per trip. There is no per-file size limit."
         },
         {
           q: "How do I view my photos?",
@@ -100,7 +100,7 @@ export default function HelpSupport({ onBack }) {
         },
         {
           q: "Photos won't upload",
-          a: "Check that your files are under the size limit (100MB total size per trip for free users, and 1GB total file size per trip for premium users). Ensure your trip is saved first, and try using a different browser if issues persist."
+          a: "Check that your total upload size is under the limit (100MB per trip for free users, 1GB per trip for premium users). Ensure your trip is saved first, and try using a different browser if issues persist."
         }
       ]
     },

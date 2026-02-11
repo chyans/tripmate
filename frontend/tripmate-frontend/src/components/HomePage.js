@@ -13,6 +13,28 @@ export default function HomePage({ onGetStarted, onLogin }) {
   const testimonialsRef = useRef(null);
   const pricingRef = useRef(null);
   
+  // Default fallback reviews shown when DB has no matching reviews
+  const fallbackReviews = [
+    {
+      username: "Nicholas",
+      full_name: "Nicholas",
+      rating: 5,
+      comment: "TripMate made planning my Japan trip so much easier. I just added my stops, it sorted the route, and the AI chat actually gave me solid restaurant picks in Tokyo. Budget tracker was handy too — kept me from overspending on ramen."
+    },
+    {
+      username: "John",
+      full_name: "John",
+      rating: 5,
+      comment: "Used this for a road trip across Europe with friends. Loved being able to upload photos by location and see everything on a timeline after. The whole trip planning flow is clean and simple, no clutter."
+    },
+    {
+      username: "Alexa",
+      full_name: "Alexa",
+      rating: 4,
+      comment: "Really nice app for organising travel. The route planner and weather info saved me a lot of time. Premium was worth it for the video recap — turned all my Bali photos into a highlight reel I could share with family."
+    }
+  ];
+
   // Fetch reviews from database
   useEffect(() => {
     const fetchReviews = async () => {
@@ -21,38 +43,33 @@ export default function HomePage({ onGetStarted, onLogin }) {
         const allReviews = response.data.reviews || [];
         
         // Filter for specific usernames: Nicholas, John, Alexa
-        // Get exactly one review from each username (case-insensitive)
-        const targetUsernames = ["Nicholas", "John", "Alexa"];
-        const filteredReviews = [];
-        const foundUsernames = new Set();
+        const targetUsernames = ["nicholas", "john", "alexa"];
+        const matched = {};
         
-        // First pass: find reviews matching exact usernames (case-sensitive)
         for (const review of allReviews) {
-          const usernameLower = (review.username || "").toLowerCase();
-          const fullNameLower = (review.full_name || "").toLowerCase();
+          const uname = (review.username || "").toLowerCase();
+          const fname = (review.full_name || "").toLowerCase();
           
-          // Check if this review matches any target username (case-insensitive)
-          for (const targetUsername of targetUsernames) {
-            const targetLower = targetUsername.toLowerCase();
-            if (!foundUsernames.has(targetLower) && 
-                (usernameLower === targetLower || fullNameLower === targetLower || 
-                 usernameLower.includes(targetLower) || fullNameLower.includes(targetLower))) {
-              filteredReviews.push(review);
-              foundUsernames.add(targetLower);
-              break; // Found one for this username, move to next
+          for (const target of targetUsernames) {
+            if (!matched[target] && (uname === target || fname === target || uname.includes(target) || fname.includes(target))) {
+              matched[target] = review;
+              break;
             }
           }
-          
-          // Stop if we found all 3
-          if (filteredReviews.length >= 3) break;
+          if (Object.keys(matched).length >= 3) break;
         }
         
-        // If we don't have 3 reviews, use what we have
-        setReviews(filteredReviews);
+        // Build final list: use DB review if found, otherwise use fallback
+        const final = fallbackReviews.map((fb) => {
+          const key = fb.username.toLowerCase();
+          return matched[key] || fb;
+        });
+        
+        setReviews(final);
       } catch (error) {
         console.error("Error fetching reviews:", error);
-        // Fallback to empty array if fetch fails
-        setReviews([]);
+        // Use fallback reviews if fetch fails entirely
+        setReviews(fallbackReviews);
       } finally {
         setReviewsLoading(false);
       }
