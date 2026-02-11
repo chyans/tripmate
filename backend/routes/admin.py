@@ -2,6 +2,7 @@ from flask import Blueprint, request, jsonify
 from db import get_db_connection
 from routes.auth import verify_token
 import bcrypt
+import os
 from datetime import datetime, timedelta
 
 admin_bp = Blueprint("admin_bp", __name__)
@@ -319,4 +320,23 @@ def search_users():
     finally:
         cur.close()
         conn.close()
+
+
+@admin_bp.route("/init-db", methods=["POST"])
+def init_db_endpoint():
+    """
+    Run the database initializer (schema + migrations).
+    Protected: only works when ENABLE_DB_INIT=true is set in the environment.
+    """
+    if os.getenv("ENABLE_DB_INIT", "").lower() != "true":
+        return jsonify({
+            "error": "Database initialisation is disabled. Set ENABLE_DB_INIT=true to enable."
+        }), 403
+
+    try:
+        from init_db import init_db
+        init_db()
+        return jsonify({"message": "Database initialised successfully."}), 200
+    except Exception as e:
+        return jsonify({"error": f"Database initialisation failed: {str(e)}"}), 500
 
