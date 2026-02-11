@@ -14,7 +14,7 @@ def get_db_connection():
     Supports two configuration styles:
       1. DATABASE_URL  –  mysql+pymysql://user:pass@host:port/db
                           mysql://user:pass@host:port/db
-      2. Separate vars –  DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME
+      2. Separate vars –  MYSQLHOST, MYSQLPORT, MYSQLUSER, MYSQLPASSWORD, MYSQLDATABASE
     All values come from environment variables. No secrets are hardcoded.
     """
     try:
@@ -55,13 +55,13 @@ def get_db_connection():
                 password=password,
             )
         else:
-            # Fall back to individual env vars
+            # Fall back to individual env vars (Railway sets MYSQL* automatically)
             conn = mysql.connector.connect(
-                host=os.getenv("DB_HOST", "localhost"),
-                port=int(os.getenv("DB_PORT", "3306")),
-                database=os.getenv("DB_NAME", "tripmate_db"),
-                user=os.getenv("DB_USER", "root"),
-                password=os.getenv("DB_PASSWORD", ""),
+                host=os.getenv("MYSQLHOST", "localhost"),
+                port=int(os.getenv("MYSQLPORT", 3306)),
+                user=os.getenv("MYSQLUSER", "root"),
+                password=os.getenv("MYSQLPASSWORD", ""),
+                database=os.getenv("MYSQLDATABASE", "tripmate_db"),
             )
 
         return conn
@@ -72,5 +72,5 @@ def get_db_connection():
         print("1. MySQL server is running")
         print("2. Database 'tripmate_db' exists (run schema_mysql.sql first)")
         print("3. Username and password are correct")
-        print("4. DATABASE_URL or DB_* environment variables are set")
+        print("4. DATABASE_URL or MYSQL* environment variables are set")
         raise
