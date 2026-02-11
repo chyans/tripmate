@@ -1,0 +1,843 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Primary Color Palette - Indigo Scale */
+  --color-primary-50: #eef2ff;
+  --color-primary-100: #e0e7ff;
+  --color-primary-200: #c7d2fe;
+  --color-primary-300: #a5b4fc;
+  --color-primary-400: #818cf8;
+  --color-primary-500: #6366f1;
+  --color-primary-600: #4f46e5;
+  --color-primary-700: #4338ca;
+  --color-primary-800: #3730a3;
+  --color-primary-900: #312e81;
+
+  /* Neutral Palette - Slate Scale */
+  --color-slate-50: #f8fafc;
+  --color-slate-100: #f1f5f9;
+  --color-slate-200: #e2e8f0;
+  --color-slate-300: #cbd5e1;
+  --color-slate-400: #94a3b8;
+  --color-slate-500: #64748b;
+  --color-slate-600: #475569;
+  --color-slate-700: #334155;
+  --color-slate-800: #1e293b;
+  --color-slate-900: #0f172a;
+
+  /* State Colors */
+  --color-success: #10b981;
+  --color-error: #dc2626;
+  --color-warning: #f59e0b;
+  --color-info: #3b82f6;
+
+  /* Glassmorphism */
+  --glass-bg: rgba(255, 255, 255, 0.7);
+  --glass-border: rgba(255, 255, 255, 0.3);
+  --glass-blur: blur(20px);
+}
+
+html {
+  zoom: 0.9;
+  -moz-transform: scale(0.9);
+  -moz-transform-origin: 0 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #ffffff;
+  color: var(--color-slate-800);
+  font-feature-settings: 'kern' 1, 'liga' 1;
+  text-rendering: optimizeLegibility;
+  font-size: 14px;
+  min-height: 100vh;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 0% 0%, rgba(99, 102, 241, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, rgba(118, 75, 162, 0.02) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, rgba(240, 147, 251, 0.015) 0%, transparent 70%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-image: 
+    repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0, 0, 0, 0.008) 2px, rgba(0, 0, 0, 0.008) 4px),
+    repeating-linear-gradient(90deg, transparent, transparent 2px, rgba(0, 0, 0, 0.008) 2px, rgba(0, 0, 0, 0.008) 4px);
+  pointer-events: none;
+  z-index: -1;
+  opacity: 0.2;
+}
+
+/* Desktop scaling */
+@media (min-width: 769px) {
+  body {
+    font-size: 13px;
+  }
+  
+  html {
+    zoom: 0.9;
+  }
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* Footer should be full width */
+footer {
+  width: 100% !important;
+  max-width: 100% !important;
+}
+
+/* Footer Responsive Styles */
+@media (max-width: 768px) {
+  footer {
+    padding: clamp(32px, 5vw, 40px) clamp(20px, 3vw, 24px) !important;
+  }
+  
+  footer > div:first-child {
+    margin-bottom: clamp(24px, 4vw, 32px) !important;
+  }
+  
+  footer > div:nth-child(2) {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: clamp(20px, 3vw, 24px) !important;
+    margin-bottom: clamp(24px, 4vw, 32px) !important;
+  }
+  
+  footer > div:last-child {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 16px !important;
+  }
+}
+
+@media (max-width: 480px) {
+  footer > div:nth-child(2) {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Responsive Utilities */
+.responsive-container {
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: clamp(16px, 4vw, 24px);
+}
+
+.responsive-grid {
+  display: grid;
+  gap: clamp(16px, 3vw, 24px);
+}
+
+.responsive-text {
+  font-size: clamp(13px, 2.5vw, 15px);
+}
+
+.responsive-heading {
+  font-size: clamp(22px, 5vw, 28px);
+}
+
+/* Mobile Responsive Styles */
+@media (max-width: 768px) {
+  .user-name-text {
+    display: none !important;
+  }
+
+  .mobile-menu-btn {
+    display: flex !important;
+  }
+
+  .desktop-nav {
+    display: none !important;
+  }
+
+  button, a {
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  body {
+    overflow-x: hidden;
+  }
+
+  table {
+    display: block;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    width: 100%;
+  }
+
+  @media (max-width: 640px) {
+    table, thead, tbody, th, td, tr {
+      display: block;
+    }
+    
+    thead tr {
+      position: absolute;
+      top: -9999px;
+      left: -9999px;
+    }
+    
+    tr {
+      border: 1px solid var(--color-slate-200);
+      margin-bottom: 12px;
+      border-radius: 12px;
+      padding: 12px;
+      background: white;
+    }
+    
+    td {
+      border: none;
+      position: relative;
+      padding-left: 50% !important;
+      padding-top: 8px !important;
+      padding-bottom: 8px !important;
+    }
+    
+    td:before {
+      content: attr(data-label);
+      position: absolute;
+      left: 12px;
+      width: 45%;
+      white-space: nowrap;
+      font-weight: 600;
+      color: var(--color-slate-600);
+    }
+  }
+}
+
+/* Desktop - Hide mobile menu button */
+@media (min-width: 769px) {
+  .mobile-menu-btn {
+    display: none !important;
+  }
+
+  .desktop-nav {
+    display: flex !important;
+  }
+
+  .mobile-menu-overlay {
+    display: none !important;
+  }
+}
+
+/* Mobile - Reset zoom */
+@media (max-width: 768px) {
+  html {
+    zoom: 1;
+  }
+}
+
+/* Tablet Styles (768px - 1024px) */
+@media (min-width: 768px) and (max-width: 1024px) {
+  .responsive-container {
+    padding: clamp(20px, 3vw, 32px);
+  }
+}
+
+/* Small Mobile (up to 480px) */
+@media (max-width: 480px) {
+  body {
+    font-size: 13px;
+  }
+  
+  html {
+    zoom: 1;
+  }
+
+  .mobile-stack {
+    flex-direction: column !important;
+  }
+
+  .mobile-full-width {
+    width: 100% !important;
+  }
+}
+
+/* Large Desktop (above 1400px) */
+@media (min-width: 1400px) {
+  .responsive-container {
+    max-width: 1600px;
+  }
+}
+
+/* Map Container Responsive */
+@media (max-width: 768px) {
+  [style*="height: 60vh"] {
+    height: 50vh !important;
+    min-height: 300px !important;
+  }
+  
+  [style*="gridTemplateColumns: repeat(3, 1fr)"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Tablet - 2 columns for dashboard cards */
+@media (min-width: 769px) and (max-width: 1024px) {
+  [style*="gridTemplateColumns: repeat(3, 1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+/* Form Inputs Responsive */
+@media (max-width: 480px) {
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="date"],
+  textarea,
+  select {
+    font-size: 16px !important;
+  }
+}
+
+/* Enhanced Mobile Responsive Styles */
+@media (max-width: 768px) {
+  /* Navigation improvements */
+  nav {
+    padding: 12px 16px !important;
+    margin: 12px !important;
+    border-radius: 12px !important;
+  }
+
+  /* Logo sizing for mobile */
+  nav img {
+    height: 36px !important;
+  }
+
+  /* Button improvements for touch */
+  button {
+    min-height: 44px !important;
+    padding: 12px 20px !important;
+    font-size: 14px !important;
+  }
+
+  /* Card improvements */
+  [style*="padding: clamp(32px"] {
+    padding: 24px 20px !important;
+  }
+
+  [style*="padding: clamp(28px"] {
+    padding: 20px 16px !important;
+  }
+
+  [style*="padding: clamp(24px"] {
+    padding: 20px 16px !important;
+  }
+
+  /* Grid improvements */
+  [style*="gridTemplateColumns"] {
+    gap: 16px !important;
+  }
+
+  /* Text improvements */
+  h1 {
+    font-size: clamp(28px, 8vw, 40px) !important;
+    line-height: 1.2 !important;
+  }
+
+  h2 {
+    font-size: clamp(22px, 6vw, 32px) !important;
+    line-height: 1.3 !important;
+  }
+
+  h3 {
+    font-size: clamp(18px, 5vw, 24px) !important;
+  }
+
+  /* Input field improvements */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="date"],
+  input[type="number"],
+  textarea,
+  select {
+    padding: 14px 16px !important;
+    font-size: 16px !important;
+    border-radius: 12px !important;
+  }
+
+  /* Modal and dialog improvements */
+  [style*="maxWidth: 600px"],
+  [style*="maxWidth: 500px"],
+  [style*="maxWidth: 420px"] {
+    max-width: calc(100% - 32px) !important;
+    margin: 16px !important;
+    padding: 24px 20px !important;
+  }
+
+  /* Map container */
+  [style*="height: 60vh"],
+  [style*="height: 50vh"] {
+    height: 45vh !important;
+    min-height: 280px !important;
+    border-radius: 12px !important;
+  }
+
+  /* Spacing improvements */
+  [style*="marginTop: clamp(24px"] {
+    margin-top: 20px !important;
+  }
+
+  [style*="marginBottom: clamp(24px"] {
+    margin-bottom: 20px !important;
+  }
+
+  [style*="gap: clamp(16px"] {
+    gap: 12px !important;
+  }
+
+  /* Flex improvements */
+  [style*="flexDirection: row"] {
+    flex-wrap: wrap !important;
+  }
+
+  /* Hide less important elements on mobile */
+  [style*="display: flex"][style*="gap: clamp(32px"] {
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+}
+
+/* Small Mobile (up to 480px) */
+@media (max-width: 480px) {
+  /* Even tighter spacing */
+  nav {
+    padding: 10px 12px !important;
+    margin: 8px !important;
+  }
+
+  /* Logo smaller on very small screens */
+  nav img {
+    height: 32px !important;
+  }
+
+  /* Cards */
+  [style*="padding: clamp(32px"],
+  [style*="padding: clamp(28px"],
+  [style*="padding: clamp(24px"] {
+    padding: 20px 16px !important;
+  }
+
+  /* Buttons full width on small screens */
+  button[style*="padding: clamp(12px"] {
+    width: 100% !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* Inputs full width */
+  input[type="text"],
+  input[type="email"],
+  input[type="password"],
+  input[type="date"],
+  input[type="number"],
+  textarea,
+  select {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  /* Text sizes */
+  h1 {
+    font-size: 24px !important;
+  }
+
+  h2 {
+    font-size: 20px !important;
+  }
+
+  h3 {
+    font-size: 18px !important;
+  }
+
+  /* Map smaller on very small screens */
+  [style*="height: 60vh"],
+  [style*="height: 50vh"],
+  [style*="height: 45vh"] {
+    height: 40vh !important;
+    min-height: 250px !important;
+  }
+
+  /* Stack elements vertically */
+  [style*="display: flex"][style*="justifyContent: space-between"] {
+    flex-direction: column !important;
+    align-items: stretch !important;
+    gap: 12px !important;
+  }
+}
+
+/* Profile Menu and Notification Panel - Mobile Responsive */
+@media (max-width: 768px) {
+  /* Profile Menu - Full width on mobile */
+  [style*="minWidth: 280px"][style*="position: fixed"] {
+    width: calc(100% - 32px) !important;
+    max-width: calc(100% - 32px) !important;
+    min-width: auto !important;
+    left: 16px !important;
+    right: 16px !important;
+  }
+
+  /* Notification Panel - Full width on mobile */
+  [style*="width: 380px"][style*="position: fixed"] {
+    width: calc(100% - 32px) !important;
+    max-width: calc(100% - 32px) !important;
+    left: 16px !important;
+    right: 16px !important;
+    top: 60px !important;
+    max-height: calc(100vh - 100px) !important;
+  }
+
+  /* Profile button - Better touch target */
+  button[style*="padding: 6px 12px 6px 6px"] {
+    min-width: 44px !important;
+    min-height: 44px !important;
+    padding: 6px !important;
+  }
+
+  /* Navigation bar - Better spacing on mobile */
+  nav[style*="padding: clamp(12px"] {
+    padding: 12px 16px !important;
+    margin: 12px !important;
+    gap: 12px !important;
+  }
+
+  /* Notification and profile buttons container */
+  div[style*="display: flex"][style*="alignItems: center"][style*="gap: 12px"] {
+    gap: 8px !important;
+    flex-wrap: wrap !important;
+  }
+
+  /* Profile menu items - Better touch targets */
+  button[style*="padding: 12px 16px"][style*="width: 100%"] {
+    min-height: 48px !important;
+    padding: 14px 16px !important;
+    font-size: 14px !important;
+  }
+
+  /* Notification panel header */
+  div[style*="padding: 20px"][style*="borderBottom"] {
+    padding: 16px !important;
+  }
+
+  /* Notification items */
+  div[style*="padding: 16px 20px"][style*="borderBottom"] {
+    padding: 12px 16px !important;
+  }
+}
+
+/* Small Mobile (up to 480px) */
+@media (max-width: 480px) {
+  /* Even tighter spacing for very small screens */
+  nav[style*="padding: clamp(12px"] {
+    padding: 10px 12px !important;
+    margin: 8px !important;
+  }
+
+  /* Profile and notification panels */
+  [style*="minWidth: 280px"][style*="position: fixed"],
+  [style*="width: 380px"][style*="position: fixed"] {
+    width: calc(100% - 24px) !important;
+    left: 12px !important;
+    right: 12px !important;
+    border-radius: 12px !important;
+  }
+
+  /* Profile menu header */
+  div[style*="padding: 16px"][style*="borderBottom"] {
+    padding: 12px !important;
+  }
+
+  /* Profile menu buttons */
+  button[style*="padding: 12px 16px"][style*="width: 100%"] {
+    padding: 16px !important;
+    min-height: 52px !important;
+    font-size: 15px !important;
+  }
+}
+
+/* Landscape Mobile (max-width 768px and landscape) */
+@media (max-width: 768px) and (orientation: landscape) {
+  /* Adjust map height for landscape */
+  [style*="height: 60vh"],
+  [style*="height: 50vh"],
+  [style*="height: 45vh"] {
+    height: 50vh !important;
+    min-height: 300px !important;
+  }
+
+  /* Reduce padding in landscape */
+  [style*="padding: clamp(32px"] {
+    padding: 20px 16px !important;
+  }
+}
+
+/* Touch-friendly improvements for mobile */
+@media (max-width: 768px) {
+  /* Ensure all interactive elements are touch-friendly */
+  a, button, input, select, textarea {
+    -webkit-tap-highlight-color: rgba(102, 126, 234, 0.2);
+    touch-action: manipulation;
+  }
+
+  /* Prevent text size adjustment on iOS */
+  input, textarea, select {
+    -webkit-text-size-adjust: 100%;
+    -webkit-appearance: none;
+  }
+
+  /* Better scrolling on mobile */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Improve form field spacing */
+  label {
+    margin-bottom: 8px !important;
+    font-size: 14px !important;
+  }
+
+  /* Better spacing between form fields */
+  input + input,
+  input + textarea,
+  textarea + input,
+  select + input {
+    margin-top: 16px !important;
+  }
+
+  /* Card shadows lighter on mobile for performance */
+  [style*="boxShadow"] {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
+  }
+
+  /* Reduce backdrop blur on mobile for performance */
+  [style*="backdropFilter"] {
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+  }
+}
+
+/* Very small screens (up to 360px) */
+@media (max-width: 360px) {
+  /* Even more compact spacing */
+  nav {
+    padding: 8px 10px !important;
+    margin: 6px !important;
+  }
+
+  nav img {
+    height: 28px !important;
+  }
+
+  [style*="padding: clamp(32px"],
+  [style*="padding: clamp(28px"],
+  [style*="padding: clamp(24px"] {
+    padding: 16px 12px !important;
+  }
+
+  h1 {
+    font-size: 22px !important;
+  }
+
+  h2 {
+    font-size: 18px !important;
+  }
+
+  h3 {
+    font-size: 16px !important;
+  }
+}
+
+/* Print Styles */
+@media print {
+  nav, footer, button {
+    display: none !important;
+  }
+}
+
+/* Modern Animations - Spring Physics */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.8;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+@keyframes skeleton {
+  0% {
+    background-position: -200px 0;
+  }
+  100% {
+    background-position: calc(200px + 100%) 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes rotate3d {
+  0% {
+    transform: perspective(1000px) rotateX(0deg) rotateY(0deg);
+  }
+  100% {
+    transform: perspective(1000px) rotateX(5deg) rotateY(5deg);
+  }
+}
+
+/* Glassmorphism Utility Classes */
+.glass {
+  background: var(--glass-bg);
+  backdrop-filter: var(--glass-blur);
+  -webkit-backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+}
+
+.glass-dark {
+  background: rgba(15, 23, 42, 0.7);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Skeleton Loader */
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-slate-200) 0px,
+    var(--color-slate-100) 40px,
+    var(--color-slate-200) 80px
+  );
+  background-size: 200px 100%;
+  animation: skeleton 1.5s ease-in-out infinite;
+  border-radius: 8px;
+}
+
+/* Smooth Transitions */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Focus States */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--color-primary-500);
+  outline-offset: 2px;
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-slate-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-slate-300);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-slate-400);
+}

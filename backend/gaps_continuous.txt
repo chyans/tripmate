@@ -1,0 +1,15 @@
+Continuous Training Gaps:
+================================================================================
+
+Query: tokyo must see
+Category: Attractions
+Similarity: 0.394
+Relevance: 33.33%
+Response: Tokyo hotels: Luxury options include The Ritz-Carlton Tokyo (Roppongi), Park Hyatt Tokyo (made famous by movies), Mandarin Oriental Tokyo, or hotels i
+--------------------------------------------------------------------------------
+Query: barcelona things to do
+Category: Activities
+Similarity: 0.296
+Relevance: 25.00%
+Response: Barcelona activities: Visit Sagrada Família (Gaudí's unfinished masterpiece), explore Park Güell (colorful Gaudí park), see Casa Batlló and Casa Milà,
+--------------------------------------------------------------------------------

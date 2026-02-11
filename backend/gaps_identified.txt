@@ -1,0 +1,15 @@
+Identified Gaps:
+================================================================================
+
+Query: london where to eat
+Category: Food - London
+Similarity: 0.176
+Relevance: 0.00%
+Response: Manila dining: Try Filipino cuisine - adobo, sinigang, lechon, or various Filipino dishes. Visit various restaurants, try street food, explore differe
+--------------------------------------------------------------------------------
+Query: things to do paris
+Category: Attractions - Paris
+Similarity: 0.280
+Relevance: 25.00%
+Response: Paris transportation: Use Metro (extensive subway system), buses, RER trains (for suburbs), taxis, Uber, or walk (many areas walkable). Get Paris Visi
+--------------------------------------------------------------------------------
