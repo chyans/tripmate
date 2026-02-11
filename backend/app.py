@@ -375,6 +375,20 @@ def health_check():
         return jsonify({"status": "unhealthy", "database": str(e)}), 503
 
 
+@app.route("/__routes", methods=["GET"])
+def list_routes():
+    """Temporary debug endpoint — lists every registered route."""
+    routes = []
+    for rule in app.url_map.iter_rules():
+        routes.append({
+            "endpoint": rule.endpoint,
+            "methods": sorted(rule.methods - {"HEAD", "OPTIONS"}),
+            "path": rule.rule,
+        })
+    routes.sort(key=lambda r: r["path"])
+    return jsonify(routes), 200
+
+
 if __name__ == "__main__":
     print("Server starting... please wait.")
     port = int(os.getenv("PORT", 5000))
