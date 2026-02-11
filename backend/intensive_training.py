@@ -13,7 +13,7 @@ def get_all_cities():
     """Extract cities from dataset"""
     import pandas as pd
     import os
-    csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), 'travel_QA (1).csv')
+    csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'travel_QA (1).csv')
     df = pd.read_csv(csv_path)
     cities = set()
     for _, row in df.iterrows():

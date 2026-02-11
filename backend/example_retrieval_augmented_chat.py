@@ -44,7 +44,7 @@ def example_usage():
         print("Trying to initialize with explicit CSV path...")
         try:
             # Option 2: Initialize with explicit CSV path
-            csv_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "travel_QA (1).csv")
+            csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "travel_QA (1).csv")
             rai_service = DatasetOnlyChat(csv_path=csv_path)
             print("[OK] Service initialized with explicit CSV path!")
             print()

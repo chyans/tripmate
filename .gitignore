@@ -404,6 +404,9 @@ docker-compose.override.yml
 # Project-Specific
 # ============================================
 
+# Generated model cache (rebuilt automatically from CSV at startup)
+backend/travel_qa_model/
+
 # Large data files (if not needed for submission)
 # Uncomment if these shouldn't be committed:
 # backend/airports.dat

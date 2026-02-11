@@ -4,8 +4,9 @@ import os
 import urllib.parse
 from dotenv import load_dotenv
 
-# Always load .env from this file's own directory so it works regardless of cwd
-load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
+# Load .env from this file's own directory
+_env_path = os.path.join(os.path.dirname(__file__), ".env")
+load_dotenv(_env_path)
 
 
 def get_db_connection():
@@ -15,8 +16,12 @@ def get_db_connection():
       1. DATABASE_URL  –  mysql+pymysql://user:pass@host:port/db
                           mysql://user:pass@host:port/db
       2. Separate vars –  MYSQLHOST, MYSQLPORT, MYSQLUSER, MYSQLPASSWORD, MYSQLDATABASE
+                          (also accepts legacy DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME)
     All values come from environment variables. No secrets are hardcoded.
     """
+    # Reload .env every call so a server restart isn't required after edits
+    load_dotenv(_env_path, override=True)
+
     try:
         database_url = os.getenv("DATABASE_URL") or os.getenv("MYSQL_URL")
 
@@ -55,13 +60,20 @@ def get_db_connection():
                 password=password,
             )
         else:
-            # Fall back to individual env vars (Railway sets MYSQL* automatically)
+            # Fall back to individual env vars.
+            # Check MYSQL* first (Railway convention), then legacy DB_* names.
+            host = os.getenv("MYSQLHOST") or os.getenv("DB_HOST", "localhost")
+            port = int(os.getenv("MYSQLPORT") or os.getenv("DB_PORT", "3306"))
+            user = os.getenv("MYSQLUSER") or os.getenv("DB_USER", "root")
+            password = os.getenv("MYSQLPASSWORD") or os.getenv("DB_PASSWORD", "")
+            database = os.getenv("MYSQLDATABASE") or os.getenv("DB_NAME", "tripmate_db")
+
             conn = mysql.connector.connect(
-                host=os.getenv("MYSQLHOST", "localhost"),
-                port=int(os.getenv("MYSQLPORT", 3306)),
-                user=os.getenv("MYSQLUSER", "root"),
-                password=os.getenv("MYSQLPASSWORD", ""),
-                database=os.getenv("MYSQLDATABASE", "tripmate_db"),
+                host=host,
+                port=port,
+                user=user,
+                password=password,
+                database=database,
             )
 
         return conn

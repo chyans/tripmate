@@ -15,10 +15,16 @@ export default function ExportButton({ locations, photos, routeData, token, user
     }
 
     setIsExporting(true);
-    setProgress(10);
+    setProgress(5);
+
+    // Simulate progress while the server encodes the video
+    let fakeProgress = 5;
+    const progressTimer = setInterval(() => {
+      fakeProgress = Math.min(fakeProgress + 2, 85);
+      setProgress(fakeProgress);
+    }, 1000);
 
     try {
-      setProgress(20);
       const response = await axios.post(
         `${API_URL}/api/export/video`,
         {
@@ -33,15 +39,14 @@ export default function ExportButton({ locations, photos, routeData, token, user
           onDownloadProgress: (progressEvent) => {
             if (progressEvent.total) {
               const percentCompleted = Math.round(
-                20 + (progressEvent.loaded * 80) / progressEvent.total
+                85 + (progressEvent.loaded * 15) / progressEvent.total
               );
               setProgress(percentCompleted);
-            } else {
-              setProgress(50); // Indeterminate progress
             }
           }
         }
       );
+      clearInterval(progressTimer);
 
       setProgress(90);
       
@@ -83,6 +88,7 @@ export default function ExportButton({ locations, photos, routeData, token, user
         setProgress(0);
       }, 500);
     } catch (error) {
+      clearInterval(progressTimer);
       console.error("Error exporting video:", error);
       let errorMessage = "Failed to export video. ";
       if (error.response?.data) {

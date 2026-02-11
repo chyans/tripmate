@@ -26,8 +26,7 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 # File size limits per trip (in bytes)
 MAX_TRIP_STORAGE_FREE = 100 * 1024 * 1024  # 100MB per trip
 MAX_TRIP_STORAGE_PREMIUM = 1024 * 1024 * 1024  # 1GB per trip
-MAX_SINGLE_FILE_SIZE_FREE = 100 * 1024 * 1024  # 100MB max per file for free users
-MAX_SINGLE_FILE_SIZE_PREMIUM = 500 * 1024 * 1024  # 500MB max per file for premium users
+# No per-file size limit — only the total trip storage cap applies
 
 def allowed_file(filename):
     return "." in filename and filename.rsplit(".", 1)[1].lower() in ALLOWED_EXTENSIONS
@@ -459,7 +458,6 @@ def upload_photos():
         is_premium = bool(user_row[0]) if user_row and user_row[0] else False
         is_admin = bool(user_row[1]) if user_row and len(user_row) > 1 and user_row[1] else False
         max_trip_storage = MAX_TRIP_STORAGE_PREMIUM if (is_premium or is_admin) else MAX_TRIP_STORAGE_FREE
-        max_single_file_size = MAX_SINGLE_FILE_SIZE_PREMIUM if (is_premium or is_admin) else MAX_SINGLE_FILE_SIZE_FREE
         
         # Calculate current storage used for this trip (sum of file_size)
         cur.execute("SELECT COALESCE(SUM(file_size), 0) FROM photos WHERE trip_id = %s", (trip_id,))
@@ -502,11 +500,6 @@ def upload_photos():
             file.seek(0, os.SEEK_END)
             file_size = file.tell()
             file.seek(0)
-
-            # Check single file size limit (based on user's plan)
-            if file_size > max_single_file_size:
-                max_size_mb = max_single_file_size / (1024 * 1024)
-                return jsonify({"error": f"File {file.filename} exceeds maximum size limit of {int(max_size_mb)}MB"}), 400
 
             # Check trip storage limit
             if current_size + total_size + file_size > max_trip_storage:

@@ -23,6 +23,7 @@ CORS(
     supports_credentials=True,
     methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
     allow_headers=["Content-Type", "Authorization"],
+    expose_headers=["Content-Type", "Content-Disposition", "Content-Length"],
 )
 
 # Initialize AI service on startup

@@ -97,18 +97,33 @@ class DatasetOnlyChat:
         if SequenceMatcher:
             # List of all known locations (cities and countries)
             all_locations = [
+                # Japan
                 'hokkaido', 'tokyo', 'kyoto', 'osaka', 'sapporo', 'fukuoka', 'hiroshima', 'nara',
+                # East Asia
                 'shanghai', 'beijing', 'hong kong', 'taipei', 'seoul', 'busan',
-                'bali', 'jakarta', 'singapore', 'bangkok', 'kuala lumpur', 'manila', 'ho chi minh', 'hanoi',
+                # Southeast Asia
+                'bali', 'jakarta', 'yogyakarta', 'bandung', 'surabaya', 'lombok', 'medan', 'semarang',
+                'singapore', 'bangkok', 'chiang mai', 'phuket', 'pattaya', 'krabi', 'koh samui',
+                'kuala lumpur', 'penang', 'langkawi', 'malacca', 'kota kinabalu', 'johor bahru', 'ipoh', 'kuching',
+                'manila', 'cebu', 'boracay', 'palawan', 'siargao', 'baguio', 'davao',
+                'hanoi', 'ho chi minh', 'da nang', 'hoi an', 'nha trang',
+                'siem reap', 'phnom penh', 'yangon', 'mandalay', 'bagan',
+                'vientiane', 'luang prabang', 'brunei',
+                # Europe
                 'paris', 'london', 'rome', 'venice', 'barcelona', 'madrid', 'amsterdam', 'berlin', 'munich',
                 'vienna', 'prague', 'budapest', 'istanbul', 'athens', 'lisbon', 'dublin',
+                # Oceania
                 'sydney', 'melbourne', 'auckland', 'wellington',
+                # Americas
                 'new york', 'los angeles', 'san francisco', 'chicago', 'miami', 'boston', 'seattle',
                 'toronto', 'vancouver', 'montreal',
                 'rio de janeiro', 'sao paulo', 'buenos aires', 'lima', 'bogota', 'santiago',
                 'mexico city', 'dubai', 'cairo', 'cape town', 'nairobi',
-                'india', 'japan', 'china', 'thailand', 'indonesia', 'australia', 'usa', 'france',
-                'italy', 'spain', 'uk', 'germany', 'canada', 'brazil', 'argentina', 'mexico'
+                # Countries
+                'india', 'japan', 'china', 'thailand', 'indonesia', 'malaysia', 'philippines',
+                'vietnam', 'cambodia', 'myanmar', 'laos',
+                'australia', 'usa', 'france', 'italy', 'spain', 'uk', 'germany', 'canada',
+                'brazil', 'argentina', 'mexico'
             ]
             
             words = corrected.lower().split()
@@ -200,6 +215,11 @@ class DatasetOnlyChat:
             'vietnam': ['vietnam', 'vietnamese'],
             'philippines': ['philippines', 'filipino'],
             'malaysia': ['malaysia', 'malaysian'],
+            'cambodia': ['cambodia', 'cambodian', 'khmer'],
+            'myanmar': ['myanmar', 'burmese', 'burma'],
+            'laos': ['laos', 'laotian'],
+            'brunei': ['brunei'],
+            'timor-leste': ['timor-leste', 'east timor', 'timor'],
             'maldives': ['maldives', 'maldivian'],
             'iceland': ['iceland', 'icelandic'],
             'new zealand': ['new zealand', 'zealand'],
@@ -222,47 +242,113 @@ class DatasetOnlyChat:
         # frequently in the dataset or in clarification prompts, so that short
         # follow‑up answers like "sapporo" are correctly recognized as cities.
         city_keywords = {
+            # Japan
             'tokyo': ['tokyo'],
             'kyoto': ['kyoto'],
             'osaka': ['osaka'],
             'hokkaido': ['hokkaido'],
-            # Key Japanese cities used in clarification examples
             'sapporo': ['sapporo'],
             'fukuoka': ['fukuoka'],
             'hiroshima': ['hiroshima'],
+            # East Asia
             'shanghai': ['shanghai', 'pudong'],
-            'bali': ['bali'],
+            'beijing': ['beijing'],
+            'hong kong': ['hong kong'],
+            'taipei': ['taipei'],
+            'seoul': ['seoul'],
+            'busan': ['busan'],
+            # Southeast Asia – Malaysia
+            'kuala lumpur': ['kuala lumpur', 'kl'],
+            'penang': ['penang', 'george town penang'],
+            'langkawi': ['langkawi'],
+            'malacca': ['malacca', 'melaka'],
+            'kota kinabalu': ['kota kinabalu'],
+            'johor bahru': ['johor bahru', 'johor'],
+            'ipoh': ['ipoh'],
+            'kuching': ['kuching'],
+            'cameron highlands': ['cameron highlands'],
+            # Southeast Asia – Philippines
+            'manila': ['manila'],
+            'cebu': ['cebu'],
+            'boracay': ['boracay'],
+            'palawan': ['palawan', 'el nido', 'coron'],
+            'siargao': ['siargao'],
+            'baguio': ['baguio'],
+            'davao': ['davao'],
+            'bohol': ['bohol'],
+            # Southeast Asia – Indonesia
+            'bali': ['bali', 'ubud', 'seminyak', 'kuta bali'],
             'jakarta': ['jakarta'],
+            'yogyakarta': ['yogyakarta', 'jogja', 'jogjakarta'],
+            'bandung': ['bandung'],
+            'surabaya': ['surabaya'],
+            'lombok': ['lombok', 'gili trawangan', 'gili islands'],
+            'medan': ['medan', 'lake toba'],
+            'semarang': ['semarang'],
+            # Southeast Asia – Thailand
+            'bangkok': ['bangkok'],
+            'chiang mai': ['chiang mai', 'chiangmai'],
+            'phuket': ['phuket'],
+            'pattaya': ['pattaya'],
+            'krabi': ['krabi', 'railay'],
+            'koh samui': ['koh samui', 'samui'],
+            # Southeast Asia – Vietnam
+            'hanoi': ['hanoi'],
+            'ho chi minh city': ['ho chi minh', 'saigon', 'hcmc'],
+            'da nang': ['da nang', 'danang'],
+            'hoi an': ['hoi an', 'hoian'],
+            'nha trang': ['nha trang'],
+            # Southeast Asia – Cambodia
+            'siem reap': ['siem reap', 'angkor'],
+            'phnom penh': ['phnom penh'],
+            # Southeast Asia – Myanmar
+            'yangon': ['yangon', 'rangoon'],
+            'mandalay': ['mandalay'],
+            'bagan': ['bagan'],
+            # Southeast Asia – Laos
+            'vientiane': ['vientiane'],
+            'luang prabang': ['luang prabang'],
+            # Southeast Asia – Singapore & Brunei
+            'singapore': ['singapore'],
+            'brunei': ['brunei', 'bandar seri begawan'],
+            # Oceania
             'sydney': ['sydney'],
             'melbourne': ['melbourne'],
-            'bangkok': ['bangkok'],
+            # Europe
             'paris': ['paris'],
+            'london': ['london'],
             'rome': ['rome'],
             'venice': ['venice'],
             'barcelona': ['barcelona'],
             'madrid': ['madrid'],
+            'amsterdam': ['amsterdam'],
+            'berlin': ['berlin'],
+            'prague': ['prague'],
+            'budapest': ['budapest'],
+            'vienna': ['vienna'],
+            'lisbon': ['lisbon'],
+            'athens': ['athens'],
+            # Americas
             'buenos aires': ['buenos aires', 'buenosaires'],
             'rio de janeiro': ['rio de janeiro', 'rio'],
             'sao paulo': ['sao paulo', 'são paulo'],
             'lima': ['lima'],
             'bogota': ['bogota', 'bogotá'],
             'santiago': ['santiago'],
-            'mexico city': ['mexico city', 'mexico'],
+            'mexico city': ['mexico city'],
             'new york': ['new york', 'nyc'],
-            'los angeles': ['los angeles', 'la'],
+            'los angeles': ['los angeles'],  # removed 'la' alias — matches 'kuala', 'malacca', etc.
             'chicago': ['chicago'],
-            'san francisco': ['san francisco', 'sf'],
+            'san francisco': ['san francisco'],
             'miami': ['miami'],
             'seattle': ['seattle'],
             'boston': ['boston'],
-            'london': ['london'],
-            'singapore': ['singapore'],
-            'hong kong': ['hong kong'],
+            # Middle East / Africa
             'dubai': ['dubai'],
             'istanbul': ['istanbul'],
             'cairo': ['cairo'],
             'cape town': ['cape town'],
-            'nairobi': ['nairobi']
+            'nairobi': ['nairobi'],
         }
         
         # Check for countries
@@ -313,354 +399,233 @@ class DatasetOnlyChat:
 
         If `focus` is provided (e.g. 'luxury', 'budget', 'mid-range'),
         only the matching category section is returned.
+
+        Strategy:
+          1. If text already has markdown headers (**Luxury:**), parse those.
+          2. If text is a flat sentence with clear markers (Luxury …. Mid-range: …. Budget: …),
+             split by those markers and format each section.
+          3. Otherwise return text as-is (let _format_response handle it).
         """
-        text = response.strip()
-        
-        # PRIORITY: Handle pattern like "{City} accommodation: Luxury hotels - items, items. Mid-range hotels - items, items. Budget hotels - items, items."
-        # Also handle patterns like "Ryokans (description) - items, items. Mid-range hotels - items, items. Budget hotels - items, items."
-        # This is the format from our generic accommodation entries
         import re
-        
-        # Pattern to match: "City accommodation: Luxury hotels - items. Mid-range hotels - items. Budget hotels - items."
-        pattern = r'([A-Za-z\s]+)\s+accommodation:\s*(.+?)(?:\.\s*|$)'
-        match = re.match(pattern, text, re.IGNORECASE)
-        
-        if match:
-            # Extract the rest of the text after "City accommodation:"
-            rest_text = match.group(2) if match else text
-        else:
-            # Try to match pattern without "accommodation:" prefix
-            # Pattern: "Ryokans (description) - items. Mid-range hotels - items. Budget hotels - items."
-            rest_text = text
-        
-        # Split by periods to get each category section
-        # Pattern: "Luxury hotels - items, items. Mid-range hotels - items, items. Budget hotels - items, items."
-        # Also handle: "Ryokans (description) - items, items. Mid-range hotels - items, items."
-        sections = re.split(r'\.\s+(?=[A-Z])', rest_text)
-        
-        # Check if we have category-like sections
-        has_category_sections = False
-        for section in sections:
-            section_lower = section.lower()
-            if any(kw in section_lower for kw in ['luxury', 'mid-range', 'mid range', 'budget', 'ryokan', 'hotel']):
-                has_category_sections = True
-                break
-        
-        if has_category_sections:
-            
-            formatted_sections = []
-            category_keywords = {
-                'luxury': ['luxury', 'ryokan', 'ryokans', '5-star', '5 star', 'premium', 'deluxe', 'boutique'],
-                'mid-range': ['mid-range', 'mid range', 'midrange', '3-star', '3 star', 'moderate', 'standard'],
-                'budget': ['budget', 'cheap', 'affordable', 'hostel', 'hostels', '2-star', '2 star', 'economy']
-            }
-            
-            for section in sections:
-                section = section.strip()
-                if not section:
+        text = response.strip()
+
+        # ---- helpers ----
+        _CATEGORY_ORDER = ['Luxury', 'Mid-range', 'Budget']
+
+        def _normalise_category(name: str) -> str:
+            n = name.lower().strip().rstrip(':')
+            if any(k in n for k in ['luxury', '5-star', '5 star', 'premium', 'deluxe', 'ryokan']):
+                return 'Luxury'
+            if any(k in n for k in ['mid-range', 'mid range', 'midrange', 'moderate']):
+                return 'Mid-range'
+            if any(k in n for k in ['budget', 'cheap', 'affordable', 'hostel', 'economy']):
+                return 'Budget'
+            return name.strip().rstrip(':')
+
+        def _build_output(sections_dict: dict, focus_cat: Optional[str] = None) -> str:
+            """Turn {category: [items]} into a formatted string."""
+            parts = []
+            order = [c for c in _CATEGORY_ORDER if c in sections_dict]
+            # add any remaining categories not in the standard order
+            for c in sections_dict:
+                if c not in order:
+                    order.append(c)
+
+            for cat in order:
+                if focus_cat and _normalise_category(cat) != _normalise_category(focus_cat):
                     continue
-                
-                section_lower = section.lower()
-                
-                # Find which category this section belongs to
-                category_name = None
-                matched_keyword = None
-                for cat, keywords in category_keywords.items():
-                    for kw in keywords:
-                        # Check if section starts with keyword or contains it
-                        if (section_lower.startswith(kw) or 
-                            f"{kw} " in section_lower or 
-                            f"{kw}s " in section_lower or
-                            f"{kw}s-" in section_lower):
-                            category_name = cat.title()
-                            matched_keyword = kw
-                            # Standardize to "Mid-range" instead of "Mid-Range"
-                            if cat == 'mid-range':
-                                category_name = 'Mid-range'
-                            break
-                    if category_name:
+                items = sections_dict[cat]
+                if not items:
+                    continue
+                if parts:
+                    parts.append('')  # blank line between categories
+                parts.append(f"{cat}:")
+                for item in items:
+                    item = item.strip().rstrip('.')
+                    if item:
+                        parts.append(f"  • {item}")
+            return '\n'.join(parts)
+
+        # ---- 1. Markdown-formatted text (**Category:** with - bullets) ----
+        if '**' in text:
+            sections_dict: Dict[str, list] = {}
+            current_cat = None
+            for line in text.split('\n'):
+                line = line.strip()
+                if not line:
+                    continue
+                # Match **Luxury:** or **Mid-Range:** etc.
+                hdr = re.match(r'\*\*(.+?)\*\*:?\s*', line)
+                if hdr:
+                    current_cat = _normalise_category(hdr.group(1))
+                    sections_dict.setdefault(current_cat, [])
+                    remainder = line[hdr.end():].strip()
+                    if remainder:
+                        sections_dict[current_cat].append(remainder.lstrip('- ').strip())
+                elif current_cat:
+                    item = re.sub(r'^[-•]\s*', '', line).strip()
+                    if item:
+                        sections_dict[current_cat].append(item)
+            if sections_dict:
+                return _build_output(sections_dict, focus)
+
+        # ---- 2. Flat-sentence format ----
+        # Patterns seen in data:
+        #   "City hotels: Luxury - item, item. Mid-range - item, item. Budget - item, item."
+        #   "City hotels: Luxury options include item, item. Mid-range: item. Budget: item."
+        #   "City accommodation: Luxury hotels (area), mid-range hotels, ... Budget: price."
+
+        # Strip "City hotels:" / "City accommodation:" prefix to expose category markers
+        body = re.sub(
+            r'^[A-Za-z\s]+(?:hotels?|accommodation)\s*:\s*',
+            '', text, count=1, flags=re.IGNORECASE
+        ).strip()
+        if not body:
+            body = text
+
+        # Find category markers at sentence boundaries only (start, after ". ", after ": ")
+        # This avoids false matches like "budget hotels" in the middle of a sentence.
+        cat_word = r'(?:(?:^|(?<=\.\s)|(?<=:\s)))(Luxury|Mid[- ]?[Rr]ange|Budget)'
+        marker_iter = list(re.finditer(cat_word, body, flags=re.IGNORECASE))
+
+        if len(marker_iter) >= 2:
+            sections_dict = {}
+            for i, m in enumerate(marker_iter):
+                cat = _normalise_category(m.group(1))
+                start = m.end()
+                # Chunk runs until the next category marker or end of body
+                end = marker_iter[i + 1].start() if i + 1 < len(marker_iter) else len(body)
+                rest = body[start:end].strip()
+
+                # Strip leading separator: " - ", ": ", " options include "
+                rest = re.sub(r'^[\s]*[-–:]+\s*', '', rest)
+                rest = re.sub(r'^options\s+include\s*', '', rest, flags=re.IGNORECASE)
+                rest = re.sub(r'^hotels?\s*[-–:]+\s*', '', rest, flags=re.IGNORECASE)
+                rest = rest.strip()
+                # Trim trailing content that isn't part of this category
+                # Stop at "Best areas", "Areas:", "Book in advance", trailing sentence about prices, etc.
+                for stop in ['Best areas', 'Areas:', 'Book in advance', 'Budget:', 'Mid-range:', 'Luxury:']:
+                    idx = rest.find(stop)
+                    if idx != -1 and idx > 5:
+                        rest = rest[:idx]
+                # Remove trailing period/sentence fragments
+                rest = rest.strip().rstrip('.')
+                # Also clean up trailing ". " fragments from sentence splitting
+                rest = re.sub(r'\.\s*$', '', rest)
+
+                items = [item.strip().rstrip('.') for item in rest.split(',') if item.strip()]
+                sections_dict.setdefault(cat, []).extend(items)
+
+            if sections_dict:
+                return _build_output(sections_dict, focus)
+
+        # ---- 3. Line-by-line (already has newlines with category headers) ----
+        if '\n' in text:
+            sections_dict = {}
+            current_cat = None
+            for line in text.split('\n'):
+                stripped = line.strip()
+                if not stripped:
+                    continue
+                # Check if line is a category header
+                for candidate in ['Luxury', 'Mid-range', 'Mid-Range', 'Midrange', 'Budget', 'Hostel']:
+                    if stripped.lower().startswith(candidate.lower()):
+                        current_cat = _normalise_category(candidate)
+                        sections_dict.setdefault(current_cat, [])
+                        # Grab any content after the colon on the same line
+                        if ':' in stripped:
+                            rest = stripped.split(':', 1)[1].strip()
+                            if rest:
+                                for item in rest.split(','):
+                                    item = item.strip().rstrip('.')
+                                    if item:
+                                        sections_dict[current_cat].append(item)
                         break
-                
-                if category_name:
-                    # Extract items after the category name and dash
-                    # Pattern: "Luxury hotels - item1, item2, item3"
-                    # Pattern: "Ryokans (traditional inns) - item1, item2"
-                    items_match = re.search(r'-\s*(.+)', section)
-                    if items_match:
-                        items_str = items_match.group(1).strip()
-                        # Split by comma
-                        items = [item.strip() for item in items_str.split(',') if item.strip()]
-                        
-                        # Add spacing before category (except first one)
-                        if formatted_sections:
-                            formatted_sections.append('')
-                        
-                        # Format category header
-                        formatted_sections.append(f"{category_name}:")
-                        # Add items as bullets
-                        for item in items:
-                            # Clean up item - remove trailing periods
-                            item = item.rstrip('.')
-                            formatted_sections.append(f"  • {item}")
-                    else:
-                        # No dash, try to extract items after category name
-                        # Pattern: "Ryokans (description) item1, item2"
-                        # Remove category keywords and get the rest
-                        items_str = section
-                        # Remove category keyword and "hotels" if present
-                        for kw in category_keywords.get(category_name.lower(), []):
-                            items_str = re.sub(rf'{kw}s?\s+hotels?\s*', '', items_str, flags=re.IGNORECASE)
-                            items_str = re.sub(rf'{kw}s?\s*', '', items_str, flags=re.IGNORECASE)
-                        items_str = items_str.strip().lstrip('-').strip()
-                        
-                        # Check if there are items after parentheses
-                        paren_match = re.search(r'\([^)]+\)\s*(.+)', items_str)
-                        if paren_match:
-                            items_str = paren_match.group(1).strip()
-                        
-                        if items_str:
-                            items = [item.strip() for item in items_str.split(',') if item.strip()]
-                            # Add spacing before category (except first one)
-                            if formatted_sections:
-                                formatted_sections.append('')
-                            formatted_sections.append(f"{category_name}:")
-                            for item in items:
-                                item = item.rstrip('.')
-                                formatted_sections.append(f"  • {item}")
-                        else:
-                            # Add spacing before category (except first one)
-                            if formatted_sections:
-                                formatted_sections.append('')
-                            formatted_sections.append(f"{category_name}:")
-            
-            if formatted_sections:
-                result = '\n'.join(formatted_sections)
-                # Filter by focus if provided
-                if focus:
-                    return self._filter_accommodation_by_focus(result, focus)
-                return result
-        
-        # Fallback: Handle line-by-line formatting for other formats
-        # Also handle responses that might have different structures
-        lines = text.split('\n')
-        formatted_lines = []
-        category_keywords = {
-            'luxury': ['luxury', 'ryokan', 'ryokans', '5-star', '5 star', 'premium', 'deluxe', 'boutique'],
-            'mid-range': ['mid-range', 'mid range', 'midrange', '3-star', '3 star', 'moderate', 'standard'],
-            'budget': ['budget', 'cheap', 'affordable', 'hostel', 'hostels', '2-star', '2 star', 'economy']
-        }
-        
-        current_category = None
-        
-        for line in lines:
-            line = line.strip()
-            if not line:
-                formatted_lines.append('')
-                continue
-            
-            line_lower = line.lower()
-            
-            # Check if this line starts a category
-            category_found = None
-            for cat_name, keywords in category_keywords.items():
-                for kw in keywords:
-                    # Check if line starts with category keyword or contains it with colon
-                    if (line_lower.startswith(kw) or 
-                        f"{kw}:" in line_lower or 
-                        (f"{kw} " in line_lower and ':' in line) or
-                        (line_lower.startswith(kw + 's') and ':' in line)):  # Handle "Ryokans:"
-                        category_found = cat_name.title()
-                        if cat_name == 'mid-range':
-                            category_found = 'Mid-range'
-                        break
-                if category_found:
-                    break
-            
-            # If no category found but line starts with ":" or is just ":", skip it
-            if line == ':' or line.startswith(':') and not category_found:
-                continue
-            
-            if category_found:
-                # This is a category header
-                if current_category:
-                    formatted_lines.append('')  # Add spacing between categories
-                
-                # Extract category name
-                if ':' in line:
-                    parts = line.split(':', 1)
-                    category_display = parts[0].strip()
-                    # Clean up category display - remove city name if present
-                    category_display = re.sub(r'^[A-Za-z\s]+\s+accommodation\s*', '', category_display, flags=re.IGNORECASE)
-                    category_display = category_display.strip()
-                    
-                    # Map to standard category names
-                    if 'ryokan' in category_display.lower():
-                        category_display = 'Luxury'
-                    elif 'mid-range' in category_display.lower() or 'mid range' in category_display.lower():
-                        category_display = 'Mid-range'
-                    elif 'luxury' in category_display.lower() or '5-star' in category_display.lower() or 'premium' in category_display.lower():
-                        category_display = 'Luxury'
-                    elif 'budget' in category_display.lower() or 'hostel' in category_display.lower():
-                        category_display = 'Budget'
-                    elif not category_display:
-                        category_display = category_found
-                    
-                    items_str = parts[1].strip() if len(parts) > 1 else ""
                 else:
-                    category_display = category_found
-                    items_str = ""
-                
-                formatted_lines.append(f"{category_display}:")
-                current_category = category_found
-                
-                # If there are items on the same line, format them
-                if items_str:
-                    items = [item.strip() for item in items_str.split(',')]
-                    for item in items:
+                    if current_cat:
+                        item = re.sub(r'^[-•]\s*', '', stripped).strip().rstrip('.')
                         if item:
-                            formatted_lines.append(f"  • {item}")
-            elif line.startswith('  •') or line.startswith('•'):
-                # Already formatted bullet point, keep as is (ensure proper indentation)
-                if not line.startswith('  '):
-                    formatted_lines.append(f"  {line}")
-                else:
-                    formatted_lines.append(line)
-            elif line.startswith('-'):
-                # Dash-formatted item, convert to bullet
-                item_text = line.lstrip('-').strip()
-                # Handle items with descriptions like "Ryokans (traditional inns) - Tawaraya"
-                if ' - ' in item_text:
-                    parts = item_text.split(' - ', 1)
-                    formatted_lines.append(f"  • {parts[0].strip()} - {parts[1].strip()}")
-                else:
-                    formatted_lines.append(f"  • {item_text}")
-            elif ':' in line and not line.startswith(':'):
-                # Check if this is a section header (Areas, Budget, etc.)
-                if any(cat in line_lower for cat in ['areas', 'area', 'location', 'locations', 'budget', 'mid-range', 'luxury', 'price', 'cost']):
-                    # This is a section header - keep as header
-                    formatted_lines.append(line)
-                else:
-                    # Regular colon line - keep as is
-                    formatted_lines.append(line)
-            elif current_category and (',' in line or (len(line) < 100 and not line.endswith('.'))):
-                # This is likely an item under the current category
-                if ',' in line:
-                    items = [item.strip() for item in line.split(',')]
-                    for item in items:
-                        if item:
-                            # Handle items with descriptions like "Ryokans (traditional inns) - Tawaraya"
-                            if ' - ' in item:
-                                formatted_lines.append(f"  • {item}")
-                            else:
-                                formatted_lines.append(f"  • {item}")
-                else:
-                    formatted_lines.append(f"  • {line}")
-            elif len(line) < 50 and not line.endswith(('.', '!', '?')):
-                # Short line that looks like a list item
-                formatted_lines.append(f"  • {line}")
-            else:
-                # Regular text - keep as is (don't add bullets to paragraphs)
-                formatted_lines.append(line)
-        
-        # If focus is provided, filter to only that category
-        if focus:
-            focus_lower = focus.lower()
-            filtered_lines = []
-            current_category = None
-            include_category = False
-            
-            for line in formatted_lines:
-                line_lower = line.lower()
-                # Check if this is a category header
-                is_category = any(f"{cat}:" in line_lower for cat in ['luxury', 'mid-range', 'budget', 'cheap', 'affordable'])
-                
-                if is_category:
-                    current_category = line_lower
-                    # Check if this is the category we want
-                    if 'luxury' in focus_lower and 'luxury' in line_lower:
-                        include_category = True
-                    elif 'budget' in focus_lower and ('budget' in line_lower or 'cheap' in line_lower or 'affordable' in line_lower):
-                        include_category = True
-                    elif 'mid' in focus_lower and 'mid' in line_lower:
-                        include_category = True
-                    else:
-                        include_category = False
-                
-                if include_category or (not is_category and current_category and include_category):
-                    filtered_lines.append(line)
-            
-            if filtered_lines:
-                return '\n'.join(filtered_lines)
-        
-        # Return all formatted lines
-        if formatted_lines:
-            return '\n'.join(formatted_lines)
-        
-        # Fallback: original formatting logic
-        if ':' in text:
-            raw_lines = []
-            for block in text.split('\n'):
-                for seg in block.split('. '):
-                    seg = seg.strip()
-                    if seg:
-                        raw_lines.append(seg)
+                            sections_dict[current_cat].append(item)
+            if sections_dict:
+                return _build_output(sections_dict, focus)
 
-            # Group lines into sections by category
-            sections: Dict[str, List[str]] = {}
-            current_key = "__other__"
-            sections[current_key] = []
-
-            for line in raw_lines:
-                lower = line.lower()
-                if 'luxury' in lower:
-                    current_key = 'luxury'
-                    sections.setdefault(current_key, [])
-                    sections[current_key].append(line)
-                elif 'mid-range' in lower or 'mid range' in lower:
-                    current_key = 'mid-range'
-                    sections.setdefault(current_key, [])
-                    sections[current_key].append(line)
-                elif 'budget' in lower:
-                    current_key = 'budget'
-                    sections.setdefault(current_key, [])
-                    sections[current_key].append(line)
-                else:
-                    sections.setdefault(current_key, [])
-                    sections[current_key].append(line)
-
-            # If a focus is given, prefer that section only
-            if focus:
-                key = None
-                f = focus.lower()
-                if 'luxury' in f:
-                    key = 'luxury'
-                elif 'budget' in f:
-                    key = 'budget'
-                elif 'mid' in f:
-                    key = 'mid-range'
-
-                if key and key in sections and sections[key]:
-                    lines = []
-                    for ln in sections[key]:
-                        if ':' in ln and not ln.strip().startswith('-'):
-                            lines.append(ln)
-                        else:
-                            lines.append(f"• {ln}")
-                    return "\n".join(lines)
-
-            # No focus: return all sections, formatted with bullets
-            formatted: List[str] = []
-            for _, lines in sections.items():
-                for ln in lines:
-                    if ':' in ln and not ln.strip().startswith('-'):
-                        formatted.append(ln)
-                    else:
-                        formatted.append(f"• {ln}")
-            return "\n".join(formatted) if formatted else text
-
-        # Fallback: no obvious structure, just return as-is
+        # ---- 4. Fallback: return as-is ----
         return text
     
+    def _bullets_to_numbered(self, text: str) -> str:
+        """
+        Post-process a formatted response:
+        1. Replace mid-line • separators with commas (e.g. "Colorado • USA" → "Colorado, USA")
+        2. Convert every line-starting bullet (•), dash (-), and numbered prefix
+           into a clean sequentially numbered list.
+        Numbering restarts after every non-list line (headers, blank lines, plain text).
+        """
+        import re
+        if not text:
+            return text
+
+        # --- Phase 1: replace mid-line • with commas ---
+        # A mid-line • has a NON-whitespace character before it (e.g. "Colorado • USA").
+        # A line-starting • has only whitespace before it (e.g. "  • item").
+        # Use regex to replace mid-line •: any • preceded by a non-whitespace char.
+        # Allow variable spaces (but NOT newlines) around the bullet.
+        text = re.sub(r'(?<=\S) +\u2022 +', ', ', text)
+        # Handle remaining mid-line • without surrounding spaces (rare but possible)
+        cleaned_lines = []
+        for raw_line in text.split('\n'):
+            stripped = raw_line.lstrip()
+            if stripped.startswith('\u2022'):
+                # Keep leading bullet for Phase 2, replace any remaining mid-line •
+                first_bullet_pos = raw_line.index('\u2022')
+                before = raw_line[:first_bullet_pos + 1]
+                after = raw_line[first_bullet_pos + 1:]
+                after = after.replace('\u2022', ',')
+                cleaned_lines.append(before + after)
+            else:
+                # No leading bullet — replace all remaining •
+                cleaned_lines.append(raw_line.replace('\u2022', ','))
+        text = '\n'.join(cleaned_lines)
+
+        # --- Phase 2: convert line-starting bullets / dashes / numbers → numbered list ---
+        lines = text.split('\n')
+        out = []
+        counter = 0
+
+        for line in lines:
+            stripped = line.lstrip()
+
+            # Detect list items: lines starting with •, - (dash list marker), or "1."
+            is_bullet = stripped.startswith('\u2022')
+            is_dash = bool(re.match(r'^-\s+', stripped))  # "- item" but NOT "---" separators
+            is_numbered = bool(re.match(r'^\d+\.\s', stripped))
+
+            if is_bullet or is_dash or is_numbered:
+                # Strip all leading markers: bullets, dashes, numbers
+                content = stripped
+                # Remove leading bullets
+                while content.startswith('\u2022'):
+                    content = content[1:].lstrip()
+                # Remove leading dash marker  "- "
+                content = re.sub(r'^-\s+', '', content).strip()
+                # Remove leading number prefix  "12. "
+                content = re.sub(r'^\d+\.\s*', '', content).strip()
+                # Handle nested combinations like "• 1. text" or "- • text"
+                while content.startswith('\u2022'):
+                    content = content[1:].lstrip()
+                content = re.sub(r'^-\s+', '', content).strip()
+                content = re.sub(r'^\d+\.\s*', '', content).strip()
+
+                if content:
+                    counter += 1
+                    out.append(f"  {counter}. {content}")
+                else:
+                    out.append(line)
+            else:
+                counter = 0
+                out.append(line)
+
+        return '\n'.join(out)
+
     def _format_response(self, response: str) -> str:
         """
         Format any AI response with proper indexing, bullet points, and organized spacing.
@@ -849,20 +814,19 @@ class DatasetOnlyChat:
             if current.strip():
                 parts.append(current.strip())
             
-            # If we have multiple parts and they look like list items
-                if len(parts) >= 2:
-                    # Check if parts are reasonable list items (not too long, not sentences)
-                    avg_length = sum(len(p) for p in parts) / len(parts)
-                    if avg_length < 120:  # Reasonable list item length
-                        formatted_parts = []
-                        for i, part in enumerate(parts):
-                            part = part.strip()
-                            if part:
-                                # Remove trailing period if present
-                                if part.endswith('.'):
-                                    part = part[:-1]
-                                formatted_parts.append(f"  • {part}")
-                        return '\n'.join(formatted_parts)
+            if len(parts) >= 2:
+                # Check if parts are reasonable list items (not too long, not sentences)
+                avg_length = sum(len(p) for p in parts) / len(parts)
+                if avg_length < 120:  # Reasonable list item length
+                    formatted_parts = []
+                    for i, part in enumerate(parts):
+                        part = part.strip()
+                        if part:
+                            # Remove trailing period if present
+                            if part.endswith('.'):
+                                part = part[:-1]
+                            formatted_parts.append(f"  • {part}")
+                    return '\n'.join(formatted_parts)
         
         # THIRD: Check for pattern "Header: Item1, Item2, Item3" (like "Japan best places: Tokyo, Kyoto...")
         if ':' in text and ',' in text:
@@ -1113,6 +1077,37 @@ class DatasetOnlyChat:
         # If all else fails, ensure at least proper spacing
         return text
     
+    def _format_as_paragraphs(self, text: str) -> str:
+        """
+        Format text as flowing paragraphs — keeps comma-separated items inline
+        instead of splitting each one onto its own line.  Paragraph breaks are
+        inserted at sentence boundaries (". " followed by a capital letter).
+        """
+        import re
+        if not text or not text.strip():
+            return text
+        text = text.strip()
+
+        # Split at sentence boundaries: ". " followed by an uppercase letter.
+        # This keeps items like "croissants, baguettes, escargot" flowing on
+        # one line while separating distinct sentences into paragraphs.
+        paragraphs = re.split(r'\.\s+(?=[A-Z])', text)
+
+        # Reassemble: each paragraph gets its trailing period back and we
+        # separate paragraphs with a blank line.
+        cleaned = []
+        for i, para in enumerate(paragraphs):
+            para = para.strip()
+            if not para:
+                continue
+            # Add period back if it was removed by the split (except the last
+            # paragraph which may already end with punctuation).
+            if i < len(paragraphs) - 1 and not para.endswith(('.', '!', '?')):
+                para += '.'
+            cleaned.append(para)
+
+        return '\n\n'.join(cleaned)
+    
     def _format_food_response(self, response: str) -> str:
         """Format food response for better readability with consistent indexing."""
         text = response.strip()
@@ -1191,82 +1186,22 @@ class DatasetOnlyChat:
                 main_content = parts[0].strip()
                 recommendations = parts[1].strip()
                 
-                # Format main content (food items) - use _format_response to get bullet list
-                formatted_main = self._format_response(main_content)
-                
-                # Split recommendations by periods to separate items from trailing text
-                # Look for the last sentence that might be a description (usually longer, contains quotes or special phrases)
-                rec_sentences = recommendations.split('. ')
-                rec_items_text = []
-                trailing_text = []
-                
-                for i, sentence in enumerate(rec_sentences):
-                    sentence = sentence.strip()
-                    if not sentence:
-                        continue
-                    # Check if this looks like a descriptive sentence (contains quotes, long, or specific patterns)
-                    if ('"' in sentence or "'" in sentence or len(sentence) > 80 or 
-                        any(phrase in sentence.lower() for phrase in ['people', 'love', 'culture', 'tradition', 'famous', 'known'])):
-                        # This is likely trailing descriptive text, not a recommendation item
-                        trailing_text = rec_sentences[i:]
-                        break
-                    else:
-                        rec_items_text.append(sentence)
-                
-                # Format recommendations section
-                if rec_items_text:
-                    # Join back the recommendation items
-                    rec_text = '. '.join(rec_items_text)
-                    # Check if recommendations are comma-separated
-                    if ',' in rec_text:
-                        rec_items = [item.strip() for item in rec_text.split(',')]
-                        formatted_rec = []
-                        
-                        for item in rec_items:
-                            if item:
-                                # Remove trailing period if present
-                                item = item.rstrip('.')
-                                formatted_rec.append(f"  • {item}")
-                        
-                        result = f"{formatted_main}\n\n{chr(10).join(formatted_rec)}"
-                        # Add trailing text if any
-                        if trailing_text:
-                            trailing = '. '.join(t.strip() for t in trailing_text if t.strip())
-                            if trailing:
-                                result += f"\n\n{trailing}"
-                        return result
-                    else:
-                        # Single recommendation
-                        rec_text = rec_text.rstrip('.')
-                        result = f"{formatted_main}\n\n  • {rec_text}"
-                        # Add trailing text if any
-                        if trailing_text:
-                            trailing = '. '.join(t.strip() for t in trailing_text if t.strip())
-                            if trailing:
-                                result += f"\n\n{trailing}"
-                        return result
-                else:
-                    # No clear recommendations, just trailing text
-                    trailing = '. '.join(t.strip() for t in trailing_text if t.strip())
-                    if trailing:
-                        return f"{formatted_main}\n\n{trailing}"
-                    return formatted_main
+                # For food responses, keep everything as flowing paragraphs
+                # instead of splitting each item onto its own line.
+                # Reassemble: "main content. Try: recommendations"
+                full_text = f"{main_content}. {recommendations}"
+                return self._format_as_paragraphs(full_text)
         
-        # If response uses inline "•" bullets, keep as bullet list
+        # If response uses inline "•" bullets, replace them with commas
+        # and format as flowing paragraphs (food items look unnatural when
+        # every item is on its own numbered line).
         if '•' in text:
-            segments = text.split('•')
-            lines = []
-            # Anything before the first bullet is treated as an optional header
-            header = segments[0].strip()
-            if header:
-                lines.append(header)
-            for seg in segments[1:]:
-                text_item = seg.strip(" \n-")
-                if not text_item:
-                    continue
-                lines.append(f"  • {text_item}")
-            if lines:
-                return "\n".join(lines)
+            # Replace • separators with commas, then format as paragraphs
+            cleaned = text.replace(' • ', ', ').replace('• ', ', ').replace(' •', ',').replace('•', ',')
+            # Clean up double commas or leading commas
+            cleaned = re.sub(r',\s*,', ',', cleaned)
+            cleaned = re.sub(r'^\s*,\s*', '', cleaned)
+            return self._format_as_paragraphs(cleaned)
         
         # Check if response already has numbered list - ensure consistency
         if re.search(r'^\d+\.', text, re.MULTILINE):
@@ -1297,8 +1232,10 @@ class DatasetOnlyChat:
             
             return '\n'.join(formatted_lines)
         
-        # Use the general format_response function
-        return self._format_response(text)
+        # For food responses, keep as flowing paragraphs instead of splitting
+        # every comma into a separate numbered item.
+        # Split at sentence boundaries (". " followed by a capital letter) for readability.
+        return self._format_as_paragraphs(text)
     
     def _enhance_with_context(self, current_query: str, conversation_history: List[Dict]) -> str:
         """
@@ -3343,7 +3280,7 @@ class DatasetOnlyChat:
         
         return None
     
-    def chat(self, user_query: str, top_k: int = 6, conversation_history: List[Dict] = None) -> Dict:
+    def chat(self, user_query: str, top_k: int = 15, conversation_history: List[Dict] = None) -> Dict:
         """
         Answer user query using only retrieved dataset contexts.
         
@@ -3358,8 +3295,8 @@ class DatasetOnlyChat:
         # Correct typos in user query FIRST
         user_query = self._correct_typos(user_query)
         
-        # Ensure top_k is in valid range (5-8)
-        top_k = max(5, min(8, top_k))
+        # Ensure top_k is in valid range (5-25)
+        top_k = max(5, min(25, top_k))
         
         # Check if query is too vague FIRST (before retrieval to save processing)
         # This prevents retrieving irrelevant data for vague queries
@@ -3375,7 +3312,7 @@ class DatasetOnlyChat:
         # This prevents returning random irrelevant responses
         if is_vague:
             return {
-                'response': "Sorry, I didn't quite understand that.\n\nCould you please repeat or rephrase your question with a bit more detail? For example:\n\n- Which destination are you asking about?\n- Are you interested in food, attractions, hotels, transport, or something else?",
+                'response': "Sorry, I didn't quite understand that.\n\nCould you please repeat or rephrase your question with a bit more detail? For example:\n\n  1. Which destination are you asking about?\n  2. Are you interested in food, attractions, hotels, transport, or something else?",
                 'retrieved_context_count': 0,
                 'avg_similarity': 0.0,
                 'needs_clarification': True
@@ -3440,7 +3377,7 @@ class DatasetOnlyChat:
         # This prevents returning random irrelevant responses
         if is_vague:
             return {
-                'response': "Sorry, I didn't quite understand that.\n\nCould you please repeat or rephrase your question with a bit more detail? For example:\n\n- Which destination are you asking about?\n- Are you interested in food, attractions, hotels, transport, or something else?",
+                'response': "Sorry, I didn't quite understand that.\n\nCould you please repeat or rephrase your question with a bit more detail? For example:\n\n  1. Which destination are you asking about?\n  2. Are you interested in food, attractions, hotels, transport, or something else?",
                 'retrieved_context_count': len(retrieved_rows),
                 'avg_similarity': avg_similarity,
                 'needs_clarification': True
@@ -3518,7 +3455,7 @@ class DatasetOnlyChat:
         
         if vague_check or max_similarity < 0.12:
             return {
-                'response': "I'm sorry, but I couldn't find relevant information for your question in my knowledge base. Could you please provide more details? For example:\n\n- Which destination are you interested in?\n- What specific information are you looking for?\n- What would you like to know about travel?",
+                'response': "I'm sorry, but I couldn't find relevant information for your question in my knowledge base. Could you please provide more details? For example:\n\n  1. Which destination are you interested in?\n  2. What specific information are you looking for?\n  3. What would you like to know about travel?",
                 'retrieved_context_count': len(retrieved_rows),
                 'avg_similarity': avg_similarity,
                 'needs_clarification': True
@@ -3531,13 +3468,12 @@ class DatasetOnlyChat:
         # Select best response from retrieved contexts
         response = self._select_best_response(retrieved_rows, user_query, original_retrieved_rows, conversation_history)
         
-        # Format the response with proper indexing and bullet points
-        if response:
-            response = self._format_response(response)
+        # Don't format yet — post-processing below may modify the response.
+        # Formatting happens once at the very end of this method.
         
         if not response:
             return {
-                'response': "I'm sorry, but I couldn't find relevant information for your question in my knowledge base. Could you please provide more details? For example:\n\n- Which destination are you interested in?\n- What specific information are you looking for?\n- What would you like to know about travel?",
+                'response': "I'm sorry, but I couldn't find relevant information for your question in my knowledge base. Could you please provide more details? For example:\n\n  1. Which destination are you interested in?\n  2. What specific information are you looking for?\n  3. What would you like to know about travel?",
                 'retrieved_context_count': len(retrieved_rows),
                 'avg_similarity': avg_similarity,
                 'needs_clarification': True
@@ -3554,7 +3490,7 @@ class DatasetOnlyChat:
             # If response doesn't seem travel-related and similarity is low, return sorry
             if not has_travel_content and max_similarity < 0.15:
                 return {
-                    'response': "I'm sorry, but I couldn't find relevant information for your question in my knowledge base. Could you please provide more details? For example:\n\n- Which destination are you interested in?\n- What specific information are you looking for?\n- What would you like to know about travel?",
+                    'response': "I'm sorry, but I couldn't find relevant information for your question in my knowledge base. Could you please provide more details? For example:\n\n  1. Which destination are you interested in?\n  2. What specific information are you looking for?\n  3. What would you like to know about travel?",
                     'retrieved_context_count': len(retrieved_rows),
                     'avg_similarity': avg_similarity,
                     'needs_clarification': True
@@ -3807,8 +3743,24 @@ class DatasetOnlyChat:
         if conflict_note:
             response = f"{conflict_note}\n\n{response}"
         
-        # Format the response with proper indexing and bullet points
-        response = self._format_response(response)
+        # Format the response with proper indexing and numbered lists.
+        # Always apply _bullets_to_numbered as the final step to ensure
+        # no bullets (•) or dashes (-) remain — only numbered lists.
+        #
+        # Skip _format_response if the text is already well-structured:
+        #   - has bullets (•), dashes (- ), or numbered items (\n  1.)
+        #   - has category headers followed by numbered items (Luxury:\n  1.)
+        import re as _re
+        _already_formatted = (
+            '\u2022' in response
+            or bool(_re.search(r'^\s*-\s', response, _re.MULTILINE))
+            or bool(_re.search(r'^\s*\d+\.\s', response, _re.MULTILINE))
+            or '\n\n' in response  # Already has paragraph structure (from _format_as_paragraphs)
+        )
+        if _already_formatted:
+            response = self._bullets_to_numbered(response)
+        else:
+            response = self._bullets_to_numbered(self._format_response(response))
         
         return {
             'response': response,

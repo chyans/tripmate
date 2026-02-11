@@ -29,6 +29,8 @@ class TravelAIService:
         df_path = os.path.join(self.model_dir, "knowledge_base_df.csv")
         # Try multiple possible paths for the CSV file
         possible_paths = [
+            os.path.join(os.path.dirname(__file__), "travel_QA (1).csv"),
+            os.path.join(os.path.dirname(__file__), "travel_QA.csv"),
             os.path.join(os.path.dirname(__file__), "..", "travel_QA (1).csv"),
             os.path.join(os.path.dirname(__file__), "..", "travel_QA.csv"),
             os.path.join(os.path.dirname(os.path.dirname(__file__)), "travel_QA (1).csv"),

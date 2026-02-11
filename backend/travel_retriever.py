@@ -286,7 +286,7 @@ If multiple contexts conflict, point it out."""
         similarities = cosine_similarity(query_vector, self.document_vectors)[0]
         
         # Get top-k indices
-        top_k = max(5, min(8, top_k))  # Ensure between 5-8
+        top_k = max(5, min(25, top_k))  # Ensure between 5-25
         top_indices = np.argsort(similarities)[::-1][:top_k]
         
         # Build results

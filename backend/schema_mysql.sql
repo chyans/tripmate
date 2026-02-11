@@ -14,6 +14,7 @@ CREATE TABLE IF NOT EXISTS users (
     premium_expires_at TIMESTAMP NULL,
     is_suspended BOOLEAN DEFAULT FALSE,
     suspended_reason TEXT NULL,
+    notifications_enabled BOOLEAN DEFAULT TRUE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
