@@ -45,6 +45,26 @@ UPLOAD_FOLDER = os.path.join(os.path.dirname(__file__), "uploads")
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
 
+# Auto-run database migrations on startup (adds missing columns if needed)
+try:
+    from db import get_db_connection
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute("""
+        SELECT COUNT(*) FROM INFORMATION_SCHEMA.COLUMNS
+        WHERE TABLE_SCHEMA = DATABASE()
+        AND TABLE_NAME = 'users'
+        AND COLUMN_NAME = 'notifications_enabled'
+    """)
+    if cur.fetchone()[0] == 0:
+        cur.execute("ALTER TABLE users ADD COLUMN notifications_enabled BOOLEAN DEFAULT TRUE")
+        conn.commit()
+        print("[Migration] Added notifications_enabled column to users table")
+    cur.close()
+    conn.close()
+except Exception as e:
+    print(f"Warning: Auto-migration check failed: {e}")
+
 # Register blueprints
 from routes.auth import auth_bp
 from routes.trips import trips_bp
