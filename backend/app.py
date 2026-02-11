@@ -17,7 +17,13 @@ app = Flask(__name__)
 # Multiple origins can be comma-separated.
 _allowed_origins = os.getenv("FRONTEND_URL", "http://localhost:3000,http://127.0.0.1:3000")
 allowed_origins = [o.strip() for o in _allowed_origins.split(",") if o.strip()]
-CORS(app, origins=allowed_origins, supports_credentials=True)
+CORS(
+    app,
+    origins=allowed_origins,
+    supports_credentials=True,
+    methods=["GET", "POST", "PUT", "DELETE", "PATCH"],
+    allow_headers=["Content-Type", "Authorization"],
+)
 
 # Initialize AI service on startup
 try:
