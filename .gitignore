@@ -226,7 +226,7 @@ dist
 
 # Gatsby files
 .cache/
-public
+# public  ← removed: was blocking frontend/tripmate-frontend/public/
 
 # Vue.js
 .vuepress/dist
