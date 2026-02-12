@@ -91,7 +91,12 @@ export default function ExportButton({ locations, photos, routeData, token, user
       clearInterval(progressTimer);
       console.error("Error exporting video:", error);
       let errorMessage = "Failed to export video. ";
-      if (error.response?.data) {
+      if (error.code === "ERR_NETWORK" || error.message === "Network Error") {
+        // Server likely ran out of memory or timed out during encoding
+        errorMessage = "The server timed out while encoding your video. Try reducing the number of photos/videos in your trip and export again.";
+      } else if (error.code === "ECONNABORTED") {
+        errorMessage = "Export timed out. Try with fewer photos.";
+      } else if (error.response?.data) {
         // Try to read error message from blob
         if (error.response.data instanceof Blob) {
           try {

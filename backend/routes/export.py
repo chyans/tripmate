@@ -1,5 +1,6 @@
 from flask import Blueprint, request, send_file, jsonify, make_response, after_this_request
 import os
+import gc
 import tempfile
 from PIL import Image, ImageDraw, ImageFont
 import io
@@ -26,12 +27,18 @@ except Exception as e:
     print(f"MoviePy import error: {type(e).__name__}: {e}")
 
 # ---------- constants ----------
-VIDEO_W, VIDEO_H = 1280, 720
+# Kept conservative so Railway (limited RAM) doesn't OOM-kill the worker.
+# MoviePy holds ALL clips as numpy arrays in memory simultaneously.
+#   960×540×3 bytes ≈ 1.5 MB per frame (vs 2.7 MB at 1280×720)
+VIDEO_W, VIDEO_H = 960, 540
 MAX_PHOTOS = 15
-PHOTO_DURATION = 3          # seconds per photo
-VIDEO_MAX_SECONDS = None    # no cap — play full video
-VIDEO_FPS = 15              # lower FPS = faster encode for a slideshow
+PHOTO_DURATION = 3            # seconds per photo
+VIDEO_MAX_SECONDS = 8         # cap embedded video clips to 8s to save RAM
+VIDEO_FPS = 12                # lower FPS = less frames in memory during encode
 FFMPEG_PRESET = "ultrafast"
+
+# Limit PIL to avoid decompression bombs from huge camera photos
+Image.MAX_IMAGE_PIXELS = 30_000_000   # ~30 MP (covers most phone cameras)
 
 
 # ------------------------------------------------------------------
@@ -54,13 +61,13 @@ def _find_system_font():
     for path in candidates:
         if os.path.exists(path):
             try:
-                return ImageFont.truetype(path, 48)
+                return ImageFont.truetype(path, 36)
             except Exception:
                 continue
     # Last resort: try name-based
     for name in ["arial.ttf", "Arial", "DejaVuSans-Bold"]:
         try:
-            return ImageFont.truetype(name, 48)
+            return ImageFont.truetype(name, 36)
         except Exception:
             continue
     return ImageFont.load_default()
@@ -69,7 +76,7 @@ def _find_system_font():
 def _draw_label(canvas: Image.Image, text: str, font: ImageFont.ImageFont):
     """Draw a location label near the top-left of *canvas* (in-place)."""
     draw = ImageDraw.Draw(canvas)
-    x, y = 40, 30
+    x, y = 30, 20
     # shadow / outline
     for dx, dy in [(-2, -2), (-2, 2), (2, -2), (2, 2), (0, -2), (0, 2), (-2, 0), (2, 0)]:
         draw.text((x + dx, y + dy), text, fill=(0, 0, 0), font=font)
@@ -77,8 +84,19 @@ def _draw_label(canvas: Image.Image, text: str, font: ImageFont.ImageFont):
 
 
 def _photo_to_canvas(photo_path: str, location_name: str, font: ImageFont.ImageFont) -> str:
-    """Open an image, resize to VIDEO_W×VIDEO_H, draw label, save as JPEG temp file."""
-    img = Image.open(photo_path).convert("RGB")
+    """Open an image, aggressively downscale, draw label, save as small JPEG temp file.
+    
+    Large camera photos (e.g. 4000×3000, 12 MP) are reduced via PIL's draft()
+    *before* fully decoding, so they never occupy full resolution in RAM.
+    """
+    img = Image.open(photo_path)
+
+    # Use draft() for JPEG to load at a reduced resolution directly from the decoder.
+    # This avoids ever allocating the full-res pixel buffer in memory.
+    if img.format == "JPEG" and (img.width > VIDEO_W * 2 or img.height > VIDEO_H * 2):
+        img.draft("RGB", (VIDEO_W, VIDEO_H))
+
+    img = img.convert("RGB")
     img.thumbnail((VIDEO_W, VIDEO_H), Image.Resampling.LANCZOS)
 
     canvas = Image.new("RGB", (VIDEO_W, VIDEO_H), (0, 0, 0))
@@ -86,12 +104,14 @@ def _photo_to_canvas(photo_path: str, location_name: str, font: ImageFont.ImageF
     y_off = (VIDEO_H - img.height) // 2
     canvas.paste(img, (x_off, y_off))
     img.close()
+    del img
 
     _draw_label(canvas, location_name, font)
 
     tmp = tempfile.NamedTemporaryFile(delete=False, suffix=".jpg")
-    canvas.save(tmp.name, "JPEG", quality=85)
+    canvas.save(tmp.name, "JPEG", quality=75)
     canvas.close()
+    del canvas
     tmp.close()
     return tmp.name
 
@@ -222,21 +242,27 @@ def _build_video(all_photos: list):
                 vclip = None
                 try:
                     vclip = VideoFileClip(path, audio=False)
-                    # resize
-                    try:
-                        vclip = vclip.resized((VIDEO_W, VIDEO_H))
-                    except AttributeError:
-                        vclip = vclip.resize((VIDEO_W, VIDEO_H))
-                    # cap duration only if a limit is set
-                    if VIDEO_MAX_SECONDS and vclip.duration and vclip.duration > VIDEO_MAX_SECONDS:
+
+                    # Cap duration FIRST (before resize) to limit how many frames
+                    # MoviePy needs to hold — this is the biggest RAM saver for videos.
+                    if vclip.duration and vclip.duration > VIDEO_MAX_SECONDS:
                         try:
                             vclip = vclip.subclipped(0, VIDEO_MAX_SECONDS)
                         except AttributeError:
                             vclip = vclip.subclip(0, VIDEO_MAX_SECONDS)
+                        print(f"[export] capped video to {VIDEO_MAX_SECONDS}s")
+
+                    # Resize to target resolution
+                    try:
+                        vclip = vclip.resized((VIDEO_W, VIDEO_H))
+                    except AttributeError:
+                        vclip = vclip.resize((VIDEO_W, VIDEO_H))
+
                     clips.append(vclip)
                     processed += 1
                     dur = round(vclip.duration, 1) if vclip.duration else "?"
                     print(f"[export] video clip: {os.path.basename(path)} ({dur}s)")
+                    gc.collect()
                     continue
                 except Exception as e:
                     print(f"[export] video clip failed ({os.path.basename(path)}): {e}")
@@ -245,6 +271,7 @@ def _build_video(all_photos: list):
                             vclip.close()
                         except Exception:
                             pass
+                    gc.collect()
                     continue
 
             # --- image → canvas with text → ImageClip ---
@@ -255,8 +282,10 @@ def _build_video(all_photos: list):
                 clips.append(clip)
                 processed += 1
                 print(f"[export] image clip: {os.path.basename(path)}")
+                gc.collect()
             except Exception as e:
                 print(f"[export] image clip failed ({os.path.basename(path)}): {e}")
+                gc.collect()
                 continue
 
         if not clips:
@@ -281,7 +310,7 @@ def _build_video(all_photos: list):
             audio=False,
             logger=None,
             preset=FFMPEG_PRESET,
-            threads=2,
+            threads=1,              # single thread = lower peak RAM
         )
         print(f"[export] done — {os.path.getsize(out_path)} bytes")
 
@@ -295,6 +324,8 @@ def _build_video(all_photos: list):
                 c.close()
             except Exception:
                 pass
+        clips.clear()
+        gc.collect()
 
         # Clean up temp images (but NOT the video file yet)
         for tf in temp_files[:-1]:
@@ -333,4 +364,5 @@ def _build_video(all_photos: list):
                 os.unlink(tf)
             except Exception:
                 pass
+        gc.collect()
         raise
