@@ -7,7 +7,14 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
   const [isPlaying, setIsPlaying] = useState(true);
   const [isExporting, setIsExporting] = useState(false);
   const [exportProgress, setExportProgress] = useState(0);
+  const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const intervalIdRef = useRef(null);
+
+  useEffect(() => {
+    const handleResize = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   const allPhotos = Object.entries(photos || {}).flatMap(([location, locationPhotos]) =>
     locationPhotos.map((photo) => ({ ...photo, location }))
@@ -58,7 +65,7 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
         {
           headers: { Authorization: `Bearer ${token}` },
           responseType: "blob",
-          timeout: 300000, // 5 minutes timeout for video processing
+          timeout: 300000,
           onDownloadProgress: (progressEvent) => {
             if (progressEvent.total) {
               const percentCompleted = Math.round(
@@ -66,7 +73,7 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
               );
               setExportProgress(percentCompleted);
             } else {
-              setExportProgress(50); // Indeterminate progress
+              setExportProgress(50);
             }
           }
         }
@@ -74,7 +81,6 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
 
       setExportProgress(90);
       
-      // Check if response is an error (check content type)
       const contentType = response.headers['content-type'] || '';
       if (contentType.includes('application/json')) {
         const text = await response.data.text();
@@ -82,7 +88,6 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
         throw new Error(error.error || "Export failed");
       }
       
-      // Verify it's actually a video file
       if (!contentType.includes('video') && !contentType.includes('application/octet-stream')) {
         const text = await response.data.text();
         try {
@@ -112,7 +117,6 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
       console.error("Error exporting video:", error);
       let errorMessage = "Failed to export video. ";
       if (error.response?.data) {
-        // Try to read error message from blob
         if (error.response.data instanceof Blob) {
           try {
             const text = await error.response.data.text();
@@ -142,7 +146,8 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        color: "white"
+        color: "white",
+        padding: "16px"
       }}>
         <div style={{ textAlign: "center" }}>
           <h2 style={{ fontSize: "24px", marginBottom: "16px" }}>No photos to display</h2>
@@ -171,31 +176,36 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
 
   return (
     <div style={{
-      minHeight: "100vh",
+      height: "100vh",
       background: "#0f172a",
       display: "flex",
       flexDirection: "column",
-      color: "white"
+      color: "white",
+      overflow: "auto"
     }}>
       {/* Header */}
       <div style={{
-        padding: "24px 32px",
+        padding: isMobile ? "12px 16px" : "24px 32px",
         borderBottom: "1px solid rgba(255,255,255,0.1)",
         display: "flex",
         justifyContent: "space-between",
-        alignItems: "center"
+        alignItems: "center",
+        gap: "12px"
       }}>
-        <div>
+        <div style={{ minWidth: 0 }}>
           <h1 style={{
-            fontSize: "24px",
+            fontSize: isMobile ? "18px" : "24px",
             fontWeight: "700",
             margin: 0,
-            marginBottom: "4px"
+            marginBottom: "2px",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
           }}>
             {tripName || "Trip Slideshow"}
           </h1>
           <p style={{
-            fontSize: "14px",
+            fontSize: isMobile ? "12px" : "14px",
             color: "#94a3b8",
             margin: 0
           }}>
@@ -205,16 +215,17 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
         <button
           onClick={() => setIsPlaying(!isPlaying)}
           style={{
-            padding: "8px 16px",
+            padding: isMobile ? "8px 12px" : "8px 16px",
             background: "rgba(255,255,255,0.1)",
             backdropFilter: "blur(8px)",
             color: "white",
             border: "1px solid rgba(255,255,255,0.2)",
             borderRadius: "8px",
             cursor: "pointer",
-            fontSize: "14px",
+            fontSize: isMobile ? "13px" : "14px",
             fontWeight: "500",
-            transition: "all 0.2s"
+            transition: "all 0.2s",
+            flexShrink: 0
           }}
           onMouseEnter={(e) => {
             e.currentTarget.style.background = "rgba(255,255,255,0.2)";
@@ -231,149 +242,182 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
       <div style={{
         flex: 1,
         display: "flex",
+        flexDirection: "column",
         alignItems: "center",
         justifyContent: "center",
-        position: "relative",
-        padding: "32px"
+        padding: isMobile ? "16px 0" : "32px 0",
+        minHeight: 0
       }}>
-        <button
-          onClick={goToPrevious}
-          style={{
-            position: "absolute",
-            left: "32px",
-            padding: "12px 20px",
-            background: "rgba(255,255,255,0.1)",
-            backdropFilter: "blur(8px)",
-            color: "white",
-            border: "1px solid rgba(255,255,255,0.2)",
-            borderRadius: "12px",
-            cursor: "pointer",
-            fontSize: "16px",
-            fontWeight: "500",
-            transition: "all 0.2s",
-            zIndex: 10
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.2)";
-            e.currentTarget.style.transform = "scale(1.05)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.1)";
-            e.currentTarget.style.transform = "scale(1)";
-          }}
-        >
-          ← Previous
-        </button>
-
+        {/* 16:9 container + nav buttons wrapper */}
         <div style={{
-          maxWidth: "90vw",
-          maxHeight: "70vh",
-          position: "relative"
+          position: "relative",
+          width: "100%",
+          maxWidth: "1920px",
+          padding: isMobile ? "0 48px" : "0 80px",
+          boxSizing: "border-box"
         }}>
-          {(() => {
-            const isVideo = currentPhoto.filename?.toLowerCase().endsWith('.mp4') || 
-                           currentPhoto.filename?.toLowerCase().endsWith('.mov') ||
-                           currentPhoto.url?.includes('.mp4') ||
-                           currentPhoto.url?.includes('.mov');
-            
-            return isVideo ? (
-              <video
-                src={`${API_URL}${currentPhoto.url}`}
-                controls
-                autoPlay={isPlaying}
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: "70vh",
-                  objectFit: "contain",
-                  borderRadius: "12px",
-                  boxShadow: "0 20px 60px rgba(0,0,0,0.5)"
-                }}
-              />
-            ) : (
-              <img
-                src={`${API_URL}${currentPhoto.url}`}
-                alt={currentPhoto.filename}
-                style={{
-                  maxWidth: "100%",
-                  maxHeight: "70vh",
-                  objectFit: "contain",
-                  borderRadius: "12px",
-                  boxShadow: "0 20px 60px rgba(0,0,0,0.5)"
-                }}
-              />
-            );
-          })()}
-          {currentPhoto.location && (
-            <div style={{
+          {/* Previous Button – pinned to the left edge of the wrapper */}
+          <button
+            onClick={goToPrevious}
+            style={{
               position: "absolute",
-              bottom: "-40px",
-              left: "50%",
-              transform: "translateX(-50%)",
-              padding: "8px 16px",
-              background: "rgba(0,0,0,0.6)",
+              left: isMobile ? "4px" : "16px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              width: isMobile ? "36px" : "44px",
+              height: isMobile ? "36px" : "44px",
+              padding: 0,
+              background: "rgba(255,255,255,0.15)",
               backdropFilter: "blur(8px)",
-              borderRadius: "20px",
-              fontSize: "14px",
-              color: "white"
-            }}>
-              📍 {currentPhoto.location}
-            </div>
-          )}
+              color: "white",
+              border: "1px solid rgba(255,255,255,0.2)",
+              borderRadius: "50%",
+              cursor: "pointer",
+              fontSize: isMobile ? "18px" : "20px",
+              fontWeight: "500",
+              transition: "all 0.2s",
+              zIndex: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.25)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.15)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+            }}
+          >
+            ‹
+          </button>
+
+          {/* 16:9 media container */}
+          <div style={{
+            width: "100%",
+            aspectRatio: "16 / 9",
+            background: "#000",
+            borderRadius: isMobile ? "8px" : "12px",
+            overflow: "hidden",
+            position: "relative",
+            boxShadow: "0 20px 60px rgba(0,0,0,0.5)"
+          }}>
+            {(() => {
+              const isVideo = currentPhoto.filename?.toLowerCase().endsWith('.mp4') ||
+                             currentPhoto.filename?.toLowerCase().endsWith('.mov') ||
+                             currentPhoto.url?.includes('.mp4') ||
+                             currentPhoto.url?.includes('.mov');
+
+              const mediaStyle = {
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+                display: "block"
+              };
+
+              return isVideo ? (
+                <video
+                  key={currentPhoto.url}
+                  src={`${API_URL}${currentPhoto.url}`}
+                  controls
+                  autoPlay={isPlaying}
+                  style={mediaStyle}
+                />
+              ) : (
+                <img
+                  key={currentPhoto.url}
+                  src={`${API_URL}${currentPhoto.url}`}
+                  alt={currentPhoto.filename}
+                  style={mediaStyle}
+                />
+              );
+            })()}
+          </div>
+
+          {/* Next Button – pinned to the right edge of the wrapper */}
+          <button
+            onClick={goToNext}
+            style={{
+              position: "absolute",
+              right: isMobile ? "4px" : "16px",
+              top: "50%",
+              transform: "translateY(-50%)",
+              width: isMobile ? "36px" : "44px",
+              height: isMobile ? "36px" : "44px",
+              padding: 0,
+              background: "rgba(255,255,255,0.15)",
+              backdropFilter: "blur(8px)",
+              color: "white",
+              border: "1px solid rgba(255,255,255,0.2)",
+              borderRadius: "50%",
+              cursor: "pointer",
+              fontSize: isMobile ? "18px" : "20px",
+              fontWeight: "500",
+              transition: "all 0.2s",
+              zIndex: 10,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.25)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255,255,255,0.15)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+            }}
+          >
+            ›
+          </button>
         </div>
 
-        <button
-          onClick={goToNext}
-          style={{
-            position: "absolute",
-            right: "32px",
-            padding: "12px 20px",
-            background: "rgba(255,255,255,0.1)",
+        {/* Location label below the container */}
+        {currentPhoto.location && (
+          <div style={{
+            marginTop: "12px",
+            padding: "6px 16px",
+            background: "rgba(255,255,255,0.08)",
             backdropFilter: "blur(8px)",
-            color: "white",
-            border: "1px solid rgba(255,255,255,0.2)",
-            borderRadius: "12px",
-            cursor: "pointer",
-            fontSize: "16px",
-            fontWeight: "500",
-            transition: "all 0.2s",
-            zIndex: 10
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.2)";
-            e.currentTarget.style.transform = "scale(1.05)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(255,255,255,0.1)";
-            e.currentTarget.style.transform = "scale(1)";
-          }}
-        >
-          Next →
-        </button>
+            borderRadius: "20px",
+            fontSize: isMobile ? "12px" : "14px",
+            color: "#94a3b8",
+            whiteSpace: "nowrap",
+            maxWidth: "80vw",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
+          }}>
+            📍 {currentPhoto.location}
+          </div>
+        )}
       </div>
 
       {/* Export Section */}
       <div style={{
-        padding: "24px 32px",
+        padding: isMobile ? "12px 16px" : "24px 32px",
         borderTop: "1px solid rgba(255,255,255,0.1)",
         background: "rgba(255,255,255,0.05)",
         backdropFilter: "blur(8px)"
       }}>
         <div style={{
           background: "rgba(255,255,255,0.1)",
-          borderRadius: "12px",
-          padding: "24px",
+          borderRadius: isMobile ? "10px" : "12px",
+          padding: isMobile ? "16px" : "24px",
           textAlign: "center",
           border: "1px solid rgba(255,255,255,0.2)"
         }}>
-          <h3 style={{ marginBottom: "16px", fontSize: "18px", fontWeight: "600", color: "white" }}>
+          <h3 style={{ marginBottom: isMobile ? "8px" : "16px", fontSize: isMobile ? "15px" : "18px", fontWeight: "600", color: "white" }}>
             🎬 Export Trip Recap {!user?.is_premium && !user?.is_admin && <span style={{ fontSize: "12px", color: "#fbbf24", fontWeight: "400" }}>(Premium Only)</span>}
           </h3>
-          <p style={{ marginBottom: "20px", color: "#cbd5e1", fontSize: "14px" }}>
-            Create a beautiful video slideshow of your trip with photos and route information
+          <p style={{ marginBottom: isMobile ? "12px" : "20px", color: "#cbd5e1", fontSize: isMobile ? "12px" : "14px" }}>
+            Create a video slideshow of your trip
           </p>
           
           {isExporting && (
-            <div style={{ marginBottom: "16px" }}>
+            <div style={{ marginBottom: "12px" }}>
               <div style={{
                 width: "100%",
                 height: "8px",
@@ -398,13 +442,13 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
             onClick={handleExport}
             disabled={isExporting || Object.keys(photos || {}).length === 0 || (!user?.is_premium && !user?.is_admin)}
             style={{
-              padding: "12px 32px",
+              padding: isMobile ? "10px 24px" : "12px 32px",
               background: isExporting || Object.keys(photos || {}).length === 0 || (!user?.is_premium && !user?.is_admin) ? "rgba(203,213,225,0.3)" : "#667eea",
               color: "white",
               border: "none",
               borderRadius: "8px",
               cursor: isExporting || Object.keys(photos || {}).length === 0 || (!user?.is_premium && !user?.is_admin) ? "not-allowed" : "pointer",
-              fontSize: "16px",
+              fontSize: isMobile ? "14px" : "16px",
               fontWeight: "600",
               transition: "all 0.2s",
               opacity: isExporting || Object.keys(photos || {}).length === 0 || (!user?.is_premium && !user?.is_admin) ? 0.6 : 1
@@ -429,10 +473,10 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
 
       {/* Action Bar */}
       <div style={{
-        padding: "24px 32px",
+        padding: isMobile ? "12px 16px" : "24px 32px",
         borderTop: "1px solid rgba(255,255,255,0.1)",
         display: "flex",
-        gap: "12px",
+        gap: isMobile ? "8px" : "12px",
         justifyContent: "center",
         flexWrap: "wrap"
       }}>
@@ -440,14 +484,14 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
           <button
             onClick={onShare}
             style={{
-              padding: "12px 24px",
+              padding: isMobile ? "10px 16px" : "12px 24px",
               background: "rgba(255,255,255,0.1)",
               backdropFilter: "blur(8px)",
               color: "white",
               border: "1px solid rgba(255,255,255,0.2)",
               borderRadius: "10px",
               cursor: "pointer",
-              fontSize: "14px",
+              fontSize: isMobile ? "13px" : "14px",
               fontWeight: "600",
               transition: "all 0.2s"
             }}
@@ -466,14 +510,14 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
         <button
           onClick={onBackToPlanner}
           style={{
-            padding: "12px 24px",
+            padding: isMobile ? "10px 16px" : "12px 24px",
             background: "rgba(255,255,255,0.1)",
             backdropFilter: "blur(8px)",
             color: "white",
             border: "1px solid rgba(255,255,255,0.2)",
             borderRadius: "10px",
             cursor: "pointer",
-            fontSize: "14px",
+            fontSize: isMobile ? "13px" : "14px",
             fontWeight: "600",
             transition: "all 0.2s"
           }}
@@ -492,6 +536,3 @@ export default function EndOfTripSlideshow({ photos, tripName, locations, routeD
     </div>
   );
 }
-
-
-

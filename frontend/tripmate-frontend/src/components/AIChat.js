@@ -187,19 +187,21 @@ export default function AIChat({ locations, photos, token, user, tripId }) {
     }
   };
 
+  const isMobile = window.innerWidth <= 768;
+
   return (
     <div style={{
       background: "rgba(255, 255, 255, 0.7)",
       backdropFilter: "blur(20px)",
       WebkitBackdropFilter: "blur(20px)",
-      borderRadius: "24px",
-      padding: "clamp(32px, 5vw, 48px)",
-      marginTop: "clamp(24px, 4vw, 32px)",
+      borderRadius: isMobile ? "16px" : "24px",
+      padding: isMobile ? "16px" : "clamp(32px, 5vw, 48px)",
+      marginTop: "clamp(16px, 4vw, 32px)",
       boxShadow: "0 20px 60px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.5) inset, 0 4px 16px rgba(0, 0, 0, 0.04)",
       border: "1px solid rgba(255, 255, 255, 0.3)",
       display: "flex",
       flexDirection: "column",
-      height: "clamp(500px, 60vh, 600px)",
+      height: isMobile ? "clamp(350px, 55vh, 450px)" : "clamp(500px, 60vh, 600px)",
       transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
     }}>
       <div style={{ marginBottom: "clamp(20px, 3vw, 24px)", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "12px" }}>
@@ -342,7 +344,7 @@ export default function AIChat({ locations, photos, token, user, tripId }) {
         <div ref={messagesEndRef} />
       </div>
 
-      <div style={{ display: "flex", gap: "clamp(10px, 2vw, 12px)" }}>
+      <div style={{ display: "flex", gap: isMobile ? "8px" : "clamp(10px, 2vw, 12px)", flexShrink: 0 }}>
         <input
           type="text"
           value={input}
@@ -352,10 +354,11 @@ export default function AIChat({ locations, photos, token, user, tripId }) {
           disabled={!user?.is_premium && questionsUsed >= limit}
           style={{
             flex: 1,
-            padding: "clamp(12px, 2vw, 14px) clamp(16px, 3vw, 20px)",
-            borderRadius: "14px",
+            minWidth: 0,
+            padding: isMobile ? "12px 14px" : "clamp(12px, 2vw, 14px) clamp(16px, 3vw, 20px)",
+            borderRadius: isMobile ? "12px" : "14px",
             border: "1px solid rgba(226, 232, 240, 0.8)",
-            fontSize: "clamp(13px, 2vw, 14px)",
+            fontSize: isMobile ? "16px" : "clamp(13px, 2vw, 14px)",
             background: "rgba(255, 255, 255, 0.8)",
             backdropFilter: "blur(10px)",
             WebkitBackdropFilter: "blur(10px)",
@@ -377,22 +380,23 @@ export default function AIChat({ locations, photos, token, user, tripId }) {
           onClick={handleSend}
           disabled={isLoading || (!user?.is_premium && questionsUsed >= limit)}
           style={{
-            padding: "clamp(12px, 2vw, 14px) clamp(24px, 4vw, 28px)",
+            padding: isMobile ? "12px 18px" : "clamp(12px, 2vw, 14px) clamp(24px, 4vw, 28px)",
             background: (isLoading || (!user?.is_premium && questionsUsed >= limit))
               ? "linear-gradient(135deg, #94a3b8 0%, #64748b 100%)" 
               : "linear-gradient(135deg, #667eea 0%, #764ba2 100%)",
             color: "white",
             border: "none",
-            borderRadius: "14px",
+            borderRadius: isMobile ? "12px" : "14px",
             cursor: (isLoading || (!user?.is_premium && questionsUsed >= limit)) ? "not-allowed" : "pointer",
             opacity: (!user?.is_premium && questionsUsed >= limit) ? 0.6 : 1,
-            fontSize: "clamp(13px, 2vw, 14px)",
+            fontSize: isMobile ? "14px" : "clamp(13px, 2vw, 14px)",
             fontWeight: "600",
             transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)",
             boxShadow: isLoading 
               ? "0 4px 12px rgba(148, 163, 184, 0.3)" 
               : "0 4px 16px rgba(102, 126, 234, 0.3)",
-            whiteSpace: "nowrap"
+            whiteSpace: "nowrap",
+            flexShrink: 0
           }}
           onMouseEnter={(e) => {
             if (!isLoading) {

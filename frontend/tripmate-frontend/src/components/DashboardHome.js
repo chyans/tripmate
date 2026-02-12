@@ -169,6 +169,29 @@ export default function DashboardHome({ token, user, onCreateNew, onNavigateToTr
             transform: scale(1.05);
           }
         }
+        .dashboard-bento-grid {
+          display: grid;
+          grid-template-columns: repeat(3, 1fr);
+          gap: clamp(24px, 4vw, 32px);
+        }
+        .dashboard-recent-trips-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+          gap: clamp(24px, 4vw, 32px);
+        }
+        @media (max-width: 1024px) {
+          .dashboard-bento-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+        @media (max-width: 768px) {
+          .dashboard-bento-grid {
+            grid-template-columns: 1fr;
+          }
+          .dashboard-recent-trips-grid {
+            grid-template-columns: 1fr;
+          }
+        }
       `}</style>
       <div style={{ 
         width: "100%", 
@@ -180,7 +203,7 @@ export default function DashboardHome({ token, user, onCreateNew, onNavigateToTr
           width: "100%",
           maxWidth: "1440px", 
           margin: "0 auto", 
-          padding: "clamp(48px, 8vw, 80px) clamp(32px, 6vw, 80px)", 
+          padding: "clamp(24px, 8vw, 80px) clamp(16px, 6vw, 80px)", 
           background: "transparent",
           flex: "1 0 auto", 
           display: "flex", 
@@ -217,10 +240,7 @@ export default function DashboardHome({ token, user, onCreateNew, onNavigateToTr
           </div>
 
           {/* Bento Grid */}
-          <div style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "clamp(24px, 4vw, 32px)",
+          <div className="dashboard-bento-grid" style={{
             marginBottom: "clamp(64px, 10vw, 96px)",
             width: "100%"
           }}>
@@ -622,11 +642,7 @@ export default function DashboardHome({ token, user, onCreateNew, onNavigateToTr
                 )}
               </div>
               {recentTrips.length > 0 ? (
-                <div style={{
-                  display: "grid",
-                  gridTemplateColumns: "repeat(auto-fill, minmax(360px, 1fr))",
-                  gap: "clamp(24px, 4vw, 32px)"
-                }}>
+                <div className="dashboard-recent-trips-grid">
                   {recentTrips.map((trip, idx) => (
                     <div
                       key={trip.id}

@@ -210,14 +210,14 @@ function App() {
         background: "rgba(255, 255, 255, 0.9)",
         backdropFilter: "blur(20px)",
         WebkitBackdropFilter: "blur(20px)",
-        padding: "clamp(12px, 2vw, 16px) clamp(16px, 3vw, 24px)",
+        padding: isMobile ? "10px 12px" : "clamp(12px, 2vw, 16px) clamp(16px, 3vw, 24px)",
         boxShadow: "0 8px 32px rgba(0, 0, 0, 0.1), 0 0 0 1px rgba(255, 255, 255, 0.5) inset",
         marginBottom: "clamp(16px, 3vw, 24px)",
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        flexWrap: "wrap",
-        gap: "16px",
+        flexWrap: isMobile ? "nowrap" : "wrap",
+        gap: isMobile ? "8px" : "16px",
         position: "sticky",
         top: 0,
         border: "1px solid rgba(255, 255, 255, 0.3)",
@@ -225,17 +225,18 @@ function App() {
         margin: "clamp(16px, 3vw, 24px) clamp(16px, 3vw, 24px) clamp(16px, 3vw, 24px) clamp(16px, 3vw, 24px)",
         zIndex: 10000
       }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap", flex: "1", minWidth: "200px" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: isMobile ? "nowrap" : "wrap", flex: "1", minWidth: isMobile ? "0" : "200px" }}>
           <img 
             src={tripmateLogo} 
             alt="TripMate Logo" 
             onClick={() => { setCurrentView("home"); setSelectedTripId(null); }}
             style={{
-              height: "40px",
+              height: isMobile ? "32px" : "40px",
               width: "auto",
               objectFit: "contain",
               cursor: "pointer",
-              transition: "all 0.3s ease"
+              transition: "all 0.3s ease",
+              flexShrink: 0
             }}
             onMouseEnter={(e) => {
               e.currentTarget.style.transform = "scale(1.05)";
@@ -462,9 +463,10 @@ function App() {
         <div style={{ 
           display: "flex", 
           alignItems: "center", 
-          gap: "12px", 
+          gap: isMobile ? "8px" : "12px", 
           position: "relative", 
-          flexWrap: "wrap"
+          flexWrap: "nowrap",
+          flexShrink: 0
         }}>
           {/* Notification Panel */}
           <NotificationPanel

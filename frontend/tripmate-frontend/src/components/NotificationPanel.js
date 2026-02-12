@@ -157,14 +157,15 @@ export default function NotificationPanel({ token, user, position }) {
             minWidth: isMobile ? '44px' : '40px',
             minHeight: isMobile ? '44px' : '40px',
             borderRadius: '12px',
-            background: isOpen ? 'rgba(102, 126, 234, 0.1)' : 'transparent',
-            border: '1px solid #e2e8f0',
+            background: isOpen ? 'rgba(102, 126, 234, 0.1)' : (isMobile ? '#f1f5f9' : 'transparent'),
+            border: isMobile ? '1.5px solid #cbd5e1' : '1px solid #e2e8f0',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-            color: '#64748b'
+            color: isMobile ? '#475569' : '#64748b',
+            padding: 0
           }}
           onMouseEnter={(e) => {
             if (!isOpen) {
@@ -182,14 +183,15 @@ export default function NotificationPanel({ token, user, position }) {
           }}
         >
           <svg
-            width="20"
-            height="20"
+            width={isMobile ? "28" : "20"}
+            height={isMobile ? "28" : "20"}
             viewBox="0 0 24 24"
             fill="none"
             stroke="currentColor"
-            strokeWidth="2"
+            strokeWidth={isMobile ? "2.5" : "2"}
             strokeLinecap="round"
             strokeLinejoin="round"
+            style={{ display: 'block', flexShrink: 0 }}
           >
             <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
             <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>

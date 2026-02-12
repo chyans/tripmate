@@ -276,170 +276,179 @@ export default function Slideshow({ photos, locations, routeData, token, user, o
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "clamp(40px, 6vw, 64px) clamp(24px, 4vw, 48px)",
+        padding: "clamp(24px, 4vw, 64px) 0",
         maxWidth: "1400px",
         margin: "0 auto",
         width: "100%",
         position: "relative"
       }}>
-        {/* Left Navigation Arrow */}
-        <button
-          onClick={() => setCurrentIndex((prev) => (prev - 1 + allPhotos.length) % allPhotos.length)}
-          style={{
-            position: "absolute",
-            left: "clamp(24px, 4vw, 48px)",
-            top: "50%",
-            transform: "translateY(-50%)",
-            background: "rgba(255, 255, 255, 0.9)",
-            backdropFilter: "blur(10px)",
-            WebkitBackdropFilter: "blur(10px)",
-            color: "#667eea",
-            border: "2px solid rgba(102, 126, 234, 0.2)",
-            borderRadius: "16px",
-            width: "clamp(56px, 8vw, 64px)",
-            height: "clamp(56px, 8vw, 64px)",
-            cursor: "pointer",
-            fontSize: "clamp(24px, 4vw, 28px)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            zIndex: 10,
-            boxShadow: "0 8px 24px rgba(102, 126, 234, 0.2)",
-            transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
-            e.currentTarget.style.color = "white";
-            e.currentTarget.style.borderColor = "#667eea";
-            e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-            e.currentTarget.style.boxShadow = "0 12px 32px rgba(102, 126, 234, 0.4)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(255, 255, 255, 0.9)";
-            e.currentTarget.style.color = "#667eea";
-            e.currentTarget.style.borderColor = "rgba(102, 126, 234, 0.2)";
-            e.currentTarget.style.transform = "translateY(-50%) scale(1)";
-            e.currentTarget.style.boxShadow = "0 8px 24px rgba(102, 126, 234, 0.2)";
-          }}
-        >
-          ‹
-        </button>
-
-        {/* Central Display Area */}
+        {/* Wrapper: nav buttons + 16:9 container */}
         <div style={{
-          width: "100%",
-          maxWidth: "clamp(800px, 90vw, 1000px)",
-          height: "clamp(500px, 60vh, 700px)",
-          background: "rgba(30, 41, 59, 0.95)",
-          backdropFilter: "blur(20px)",
-          WebkitBackdropFilter: "blur(20px)",
-          borderRadius: "32px",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
           position: "relative",
-          margin: "0 clamp(80px, 10vw, 120px)",
-          boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset",
-          overflow: "hidden",
-          animation: "slideIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both"
+          width: "100%",
+          maxWidth: "1920px",
+          padding: "0 clamp(48px, 8vw, 120px)",
+          boxSizing: "border-box"
         }}>
-          {isPlaying ? (
-            <img
-              key={currentIndex}
-              src={`${API_URL}${currentPhoto.url}`}
-              alt={currentPhoto.filename}
-              onClick={() => setIsPlaying(false)}
-              style={{
-                maxWidth: "100%",
-                maxHeight: "100%",
-                objectFit: "contain",
-                cursor: "pointer",
-                animation: "fadeInUp 0.5s ease-out"
-              }}
-            />
-          ) : (
-            <button
-              onClick={() => setIsPlaying(true)}
-              style={{
-                background: "rgba(255, 255, 255, 0.95)",
-                backdropFilter: "blur(10px)",
-                WebkitBackdropFilter: "blur(10px)",
-                border: "none",
-                borderRadius: "50%",
-                width: "clamp(80px, 12vw, 100px)",
-                height: "clamp(80px, 12vw, 100px)",
-                cursor: "pointer",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                fontSize: "clamp(32px, 5vw, 40px)",
-                color: "#667eea",
-                zIndex: 10,
-                paddingLeft: "6px",
-                boxShadow: "0 8px 32px rgba(102, 126, 234, 0.3)",
-                transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
-                animation: "float 3s ease-in-out infinite"
-              }}
-              onMouseEnter={(e) => {
-                e.currentTarget.style.transform = "scale(1.15)";
-                e.currentTarget.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
-                e.currentTarget.style.color = "white";
-                e.currentTarget.style.boxShadow = "0 12px 40px rgba(102, 126, 234, 0.5)";
-              }}
-              onMouseLeave={(e) => {
-                e.currentTarget.style.transform = "scale(1)";
-                e.currentTarget.style.background = "rgba(255, 255, 255, 0.95)";
-                e.currentTarget.style.color = "#667eea";
-                e.currentTarget.style.boxShadow = "0 8px 32px rgba(102, 126, 234, 0.3)";
-              }}
-            >
-              ▶
-            </button>
-          )}
-        </div>
+          {/* Left Navigation Arrow */}
+          <button
+            onClick={() => setCurrentIndex((prev) => (prev - 1 + allPhotos.length) % allPhotos.length)}
+            style={{
+              position: "absolute",
+              left: "clamp(4px, 2vw, 32px)",
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "rgba(255, 255, 255, 0.9)",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+              color: "#667eea",
+              border: "2px solid rgba(102, 126, 234, 0.2)",
+              borderRadius: "50%",
+              width: "clamp(40px, 6vw, 64px)",
+              height: "clamp(40px, 6vw, 64px)",
+              cursor: "pointer",
+              fontSize: "clamp(20px, 3vw, 28px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 10,
+              boxShadow: "0 8px 24px rgba(102, 126, 234, 0.2)",
+              transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+              e.currentTarget.style.color = "white";
+              e.currentTarget.style.borderColor = "#667eea";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+              e.currentTarget.style.boxShadow = "0 12px 32px rgba(102, 126, 234, 0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.9)";
+              e.currentTarget.style.color = "#667eea";
+              e.currentTarget.style.borderColor = "rgba(102, 126, 234, 0.2)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+              e.currentTarget.style.boxShadow = "0 8px 24px rgba(102, 126, 234, 0.2)";
+            }}
+          >
+            ‹
+          </button>
 
-        {/* Right Navigation Arrow */}
-        <button
-          onClick={() => setCurrentIndex((prev) => (prev + 1) % allPhotos.length)}
-          style={{
-            position: "absolute",
-            right: "clamp(24px, 4vw, 48px)",
-            top: "50%",
-            transform: "translateY(-50%)",
-            background: "rgba(255, 255, 255, 0.9)",
-            backdropFilter: "blur(10px)",
-            WebkitBackdropFilter: "blur(10px)",
-            color: "#667eea",
-            border: "2px solid rgba(102, 126, 234, 0.2)",
-            borderRadius: "16px",
-            width: "clamp(56px, 8vw, 64px)",
-            height: "clamp(56px, 8vw, 64px)",
-            cursor: "pointer",
-            fontSize: "clamp(24px, 4vw, 28px)",
+          {/* Central Display Area — 16:9 */}
+          <div style={{
+            width: "100%",
+            aspectRatio: "16 / 9",
+            background: "rgba(30, 41, 59, 0.95)",
+            backdropFilter: "blur(20px)",
+            WebkitBackdropFilter: "blur(20px)",
+            borderRadius: "clamp(12px, 2vw, 32px)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            zIndex: 10,
-            boxShadow: "0 8px 24px rgba(102, 126, 234, 0.2)",
-            transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
-            e.currentTarget.style.color = "white";
-            e.currentTarget.style.borderColor = "#667eea";
-            e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
-            e.currentTarget.style.boxShadow = "0 12px 32px rgba(102, 126, 234, 0.4)";
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.background = "rgba(255, 255, 255, 0.9)";
-            e.currentTarget.style.color = "#667eea";
-            e.currentTarget.style.borderColor = "rgba(102, 126, 234, 0.2)";
-            e.currentTarget.style.transform = "translateY(-50%) scale(1)";
-            e.currentTarget.style.boxShadow = "0 8px 24px rgba(102, 126, 234, 0.2)";
-          }}
-        >
-          ›
-        </button>
+            position: "relative",
+            boxShadow: "0 20px 60px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 255, 255, 0.1) inset",
+            overflow: "hidden",
+            animation: "slideIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both"
+          }}>
+            {isPlaying ? (
+              <img
+                key={currentIndex}
+                src={`${API_URL}${currentPhoto.url}`}
+                alt={currentPhoto.filename}
+                onClick={() => setIsPlaying(false)}
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  objectFit: "cover",
+                  cursor: "pointer",
+                  animation: "fadeInUp 0.5s ease-out"
+                }}
+              />
+            ) : (
+              <button
+                onClick={() => setIsPlaying(true)}
+                style={{
+                  background: "rgba(255, 255, 255, 0.95)",
+                  backdropFilter: "blur(10px)",
+                  WebkitBackdropFilter: "blur(10px)",
+                  border: "none",
+                  borderRadius: "50%",
+                  width: "clamp(60px, 10vw, 100px)",
+                  height: "clamp(60px, 10vw, 100px)",
+                  cursor: "pointer",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  fontSize: "clamp(24px, 4vw, 40px)",
+                  color: "#667eea",
+                  zIndex: 10,
+                  paddingLeft: "6px",
+                  boxShadow: "0 8px 32px rgba(102, 126, 234, 0.3)",
+                  transition: "all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1)",
+                  animation: "float 3s ease-in-out infinite"
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = "scale(1.15)";
+                  e.currentTarget.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+                  e.currentTarget.style.color = "white";
+                  e.currentTarget.style.boxShadow = "0 12px 40px rgba(102, 126, 234, 0.5)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  e.currentTarget.style.background = "rgba(255, 255, 255, 0.95)";
+                  e.currentTarget.style.color = "#667eea";
+                  e.currentTarget.style.boxShadow = "0 8px 32px rgba(102, 126, 234, 0.3)";
+                }}
+              >
+                ▶
+              </button>
+            )}
+          </div>
+
+          {/* Right Navigation Arrow */}
+          <button
+            onClick={() => setCurrentIndex((prev) => (prev + 1) % allPhotos.length)}
+            style={{
+              position: "absolute",
+              right: "clamp(4px, 2vw, 32px)",
+              top: "50%",
+              transform: "translateY(-50%)",
+              background: "rgba(255, 255, 255, 0.9)",
+              backdropFilter: "blur(10px)",
+              WebkitBackdropFilter: "blur(10px)",
+              color: "#667eea",
+              border: "2px solid rgba(102, 126, 234, 0.2)",
+              borderRadius: "50%",
+              width: "clamp(40px, 6vw, 64px)",
+              height: "clamp(40px, 6vw, 64px)",
+              cursor: "pointer",
+              fontSize: "clamp(20px, 3vw, 28px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 10,
+              boxShadow: "0 8px 24px rgba(102, 126, 234, 0.2)",
+              transition: "all 0.4s cubic-bezier(0.4, 0, 0.2, 1)"
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.background = "linear-gradient(135deg, #667eea 0%, #764ba2 100%)";
+              e.currentTarget.style.color = "white";
+              e.currentTarget.style.borderColor = "#667eea";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1.1)";
+              e.currentTarget.style.boxShadow = "0 12px 32px rgba(102, 126, 234, 0.4)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.background = "rgba(255, 255, 255, 0.9)";
+              e.currentTarget.style.color = "#667eea";
+              e.currentTarget.style.borderColor = "rgba(102, 126, 234, 0.2)";
+              e.currentTarget.style.transform = "translateY(-50%) scale(1)";
+              e.currentTarget.style.boxShadow = "0 8px 24px rgba(102, 126, 234, 0.2)";
+            }}
+          >
+            ›
+          </button>
+        </div>
       </div>
 
       {/* Export Button Section */}

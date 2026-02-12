@@ -5,9 +5,12 @@ import os
 
 weather_traffic_bp = Blueprint('weather_traffic', __name__)
 
-# OpenWeatherMap API key - should be set in environment variables
-OPENWEATHER_API_KEY = os.getenv('OPENWEATHER_API_KEY', '')
+# OpenWeatherMap API base URL
 OPENWEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5'
+
+def get_openweather_key():
+    """Read API key at request time so Railway env vars are always picked up."""
+    return os.getenv('OPENWEATHER_API_KEY', '')
 
 @weather_traffic_bp.route('/api/weather', methods=['GET'])
 def get_weather():
@@ -22,7 +25,8 @@ def get_weather():
         if not lat or not lng:
             return jsonify({"error": "Latitude and longitude are required"}), 400
         
-        if not OPENWEATHER_API_KEY:
+        api_key = get_openweather_key()
+        if not api_key:
             return jsonify({
                 "error": "Weather API not configured",
                 "message": "OpenWeatherMap API key not set"
@@ -33,7 +37,7 @@ def get_weather():
         params = {
             'lat': lat,
             'lon': lng,
-            'appid': OPENWEATHER_API_KEY,
+            'appid': api_key,
             'units': 'metric'  # Celsius
         }
         
@@ -87,7 +91,8 @@ def get_weather_forecast():
         if not lat or not lng:
             return jsonify({"error": "Latitude and longitude are required"}), 400
         
-        if not OPENWEATHER_API_KEY:
+        api_key = get_openweather_key()
+        if not api_key:
             return jsonify({
                 "error": "Weather API not configured",
                 "message": "OpenWeatherMap API key not set"
@@ -98,7 +103,7 @@ def get_weather_forecast():
         params = {
             'lat': lat,
             'lon': lng,
-            'appid': OPENWEATHER_API_KEY,
+            'appid': api_key,
             'units': 'metric'
         }
         

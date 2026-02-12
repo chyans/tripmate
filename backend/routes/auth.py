@@ -190,15 +190,8 @@ def login():
             except Exception as e:
                 print(f"Error checking premium status: {str(e)}")
             
-            # Ensure user has default notifications (don't block login if this fails)
-            try:
-                from routes.notifications import create_default_notifications
-                create_default_notifications(user[0], is_premium)
-            except Exception as e:
-                print(f"Warning: Could not create default notifications: {str(e)}")
-                if "Table" not in str(e) and "doesn't exist" not in str(e):
-                    import traceback
-                    traceback.print_exc()
+            # Default notifications are created at registration, not on every login,
+            # so that deleted notifications stay deleted.
 
             token = generate_token(user[0], user[1], user[5] if len(user) > 5 else False, is_premium)
 
