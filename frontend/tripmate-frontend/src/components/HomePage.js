@@ -299,7 +299,7 @@ export default function HomePage({ onGetStarted, onLogin }) {
               fontWeight: "400",
               letterSpacing: "0.02em"
             }}>
-              Create detailed itineraries, plan optimized routes, and manage your trip memories seamlessly - all in one place.
+              Plan optimized routes, capture your trip memories, and relive your adventures seamlessly - all in one place.
             </p>
             <div style={{ 
               display: "flex", 
@@ -389,7 +389,7 @@ export default function HomePage({ onGetStarted, onLogin }) {
                 letterSpacing: "-0.03em",
                 lineHeight: "1.2"
               }}>
-                Your itinerary and your map in one view
+                Your routes and memories in one view
               </h2>
               <p style={{
                 fontSize: "clamp(16px, 2.5vw, 18px)",
